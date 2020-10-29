@@ -9,6 +9,10 @@ GameEffects.java -
 GameEffects.java -
 	includes functions for the functionality of the game itself
 
+DictionaryAttackPasswordCracker.java -
+    make sure to unzip the rockyou.txt.zip file before running this program
+    also make sure not to add rockyou.txt to git
+
 Notes:
 Feel free to add things and move stuff around, I recently created them so some 
 things may be better placed elsewhere 
