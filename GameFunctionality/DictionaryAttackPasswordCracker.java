@@ -86,7 +86,7 @@ public class DictionaryAttackPasswordCracker {
         System.out.println("This password cracking algorithm uses a dictionary attack, which uses a large list of known passwords and compares each password's " + hashingAlgorithm + " hash to your password's " + hashingAlgorithm + " hash\n" +
                 "A dictionary attack is often faster than a brute force attack but has a distinct disadvantage – if the password is not in the dictionary file, then it will not be found\n");
 
-        System.out.println("Press any key to begin");
+        System.out.println("Press Enter to Begin");
         reader.readLine();
         reader.close();
 

@@ -144,8 +144,9 @@ public class BruteForcePasswordCracker {
                 "Your password, " + password + ", has length " + length + " and the character space you said you are using has length " + cs.length() + "\n" +
                 length + "^" + cs.length() + " = " + possibilities + "\n");
 
-        System.out.println("Press any key to begin");
+        System.out.println("Press Enter to Begin");
         reader.readLine();
+        reader.close();
 
         StringBuilder sb = new StringBuilder();
         sb.setLength(length);
