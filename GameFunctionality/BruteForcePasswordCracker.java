@@ -4,6 +4,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.io.BufferedReader;
+import java.math.BigInteger;
 
 public class BruteForcePasswordCracker {
     public static final String LOWER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyz";
@@ -40,7 +41,7 @@ public class BruteForcePasswordCracker {
                 found = true;
                 long timeToFind = System.currentTimeMillis() - start;
                 double displayTime = timeToFind / 1000.0;
-                System.out.println("Password found in " + displayTime + " seconds");
+                System.out.println("Password found in " + displayTime + " seconds\n");
             }
         }
 
@@ -125,8 +126,15 @@ public class BruteForcePasswordCracker {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         hashToFind = getHash(password);
-        System.out.println("The " + hashingAlgorithm + " Hash of Your Password, " + password + ", is " + bytestoHexString(hashToFind));
+        System.out.println("The " + hashingAlgorithm + " hash of your password, " + password + ", is " + bytestoHexString(hashToFind));
         System.out.println("The value this algorithm is searching for is the hash of your password\n");
+
+        BigInteger n = new BigInteger(Integer.toString(length));
+        BigInteger numToCheck = n.pow(cs.length());
+        String possibilities = numToCheck.toString();
+        System.out.println("This brute force password cracking algorithm will need to check at most " + possibilities + " passwords to find your password");
+        System.out.println("The number of possible passwords for a given password length and character space = (password length) ^ (character space length)\n");
+
         System.out.println("Press any key to begin");
         reader.readLine();
 
