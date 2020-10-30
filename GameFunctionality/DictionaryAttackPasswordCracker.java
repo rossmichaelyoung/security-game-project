@@ -26,7 +26,7 @@ public class DictionaryAttackPasswordCracker {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    "./rockyou.txt"
+                    "../rockyou.txt"
             ));
 
             String currentPassword;
@@ -40,7 +40,7 @@ public class DictionaryAttackPasswordCracker {
                     found = true;
                     long timeToFind = System.currentTimeMillis() - start;
                     double displayTime = timeToFind / 1000.0;
-                    System.out.println("Password found in " + displayTime + " seconds");
+                    System.out.println("Password found in " + displayTime + " seconds\n");
                     break;
                 }
             }
@@ -75,8 +75,11 @@ public class DictionaryAttackPasswordCracker {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         hashToFind = getHash(password);
-        System.out.println("The " + hashingAlgorithm + " Hash of Your Password, " + password + ", is " + bytestoHexString(hashToFind));
+        System.out.println("The " + hashingAlgorithm + " hash of your password, " + password + ", is " + bytestoHexString(hashToFind));
         System.out.println("The value this algorithm is searching for is the hash of your password\n");
+
+        System.out.println("This password cracking algorithm uses a dictionary attack, which uses a large list of known passwords and compares each password's " + hashingAlgorithm + " hash to your password's " + hashingAlgorithm + " hash\n");
+
         System.out.println("Press any key to begin");
         reader.readLine();
 
