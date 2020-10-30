@@ -55,14 +55,14 @@ public class BruteForcePasswordCracker {
         if (args.length < 4) {
             System.out.println(
                     "Please Input (in this order): \n" +
-                            "Your Password \n" +
-                            "The Hashing Algorithm You Wish To Use (MD5, SHA-1, SHA-256, etc) \n" +
-                            "The Character Space of Your Password: \n" +
-                            "   l (Lower Case Letters) \n" +
-                            "   lu (Lower and Upper Case Letters) \n" +
-                            "   ld (Lower Case Letters and Digits) \n" +
+                            "1. Your Password \n" +
+                            "2. The Hashing Algorithm You Wish To Use (MD5, SHA-1, SHA-256, etc) \n" +
+                            "3. The Character Space of Your Password: \n" +
+                            "   l   (Lower Case Letters) \n" +
+                            "   lu  (Lower and Upper Case Letters) \n" +
+                            "   ld  (Lower Case Letters and Digits) \n" +
                             "   lud (Lower and Upper Case Letters and Digits) \n" +
-                            "The Length of Your Password As An Integer"
+                            "4. The Length of Your Password As An Integer"
             );
             return;
         }
@@ -115,10 +115,10 @@ public class BruteForcePasswordCracker {
             default:
                 System.out.println(
                         "Valid Character Space for Password Not Entered \n" +
-                                "Please Enter One of the Following: \n" +
-                                "   l (Lower Case Letters) \n" +
-                                "   lu (Lower and Upper Case Letters) \n" +
-                                "   ld (Lower Case Letters and Digits) \n" +
+                                "Please Enter One of the Following Character Spaces: \n" +
+                                "   l   (Lower Case Letters) \n" +
+                                "   lu  (Lower and Upper Case Letters) \n" +
+                                "   ld  (Lower Case Letters and Digits) \n" +
                                 "   lud (Lower and Upper Case Letters and Digits)"
                 );
                 return;
@@ -126,6 +126,12 @@ public class BruteForcePasswordCracker {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         hashToFind = getHash(password);
+        System.out.println("Passwords are not stored in a database, but the hash of a user's password is\n" +
+                "In order for an attacker to obtain your password, he or she will need to compare the hash of a given text string against the given hash stored in a database\n" +
+                "If these values match, the attacker knows your password\n" +
+                "To emulate this process, this algorithm will convert your password into its hash value using the hash algorithm of your choice\n" +
+                "This algorithm will then compare the hash of each text string it generates – using the character space of your choice – to your password's hash value, as this is what an attacker has to do\n");
+
         System.out.println("The " + hashingAlgorithm + " hash of your password, " + password + ", is " + bytestoHexString(hashToFind));
         System.out.println("The value this algorithm is searching for is the hash of your password\n");
 
@@ -133,7 +139,10 @@ public class BruteForcePasswordCracker {
         BigInteger numToCheck = n.pow(cs.length());
         String possibilities = numToCheck.toString();
         System.out.println("This brute force password cracking algorithm will need to check at most " + possibilities + " passwords to find your password");
-        System.out.println("The number of possible passwords for a given password length and character space = (password length) ^ (character space length)\n");
+        System.out.println("The number of possible passwords for a given password and the character space it uses is (the password's length) ^ (the character space's length)\n");
+        System.out.println("Example: \n" +
+                "Your password, " + password + ", has length " + length + " and the character space you said you are using has length " + cs.length() + "\n" +
+                length + "^" + cs.length() + " = " + possibilities + "\n");
 
         System.out.println("Press any key to begin");
         reader.readLine();
