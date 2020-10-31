@@ -17,7 +17,9 @@ GameEffects.java
  
 ### SQLInjection.java  
 
- you need to add the **postgresql-42.2.18.jar** file to the build path to run this program Enter the following to perform an SQL injection for the usernames and passwords in our database 
+ you need to add the **postgresql-42.2.18.jar** file to the build path to run this program 
+ 
+ Enter the following to perform an SQL injection for the usernames and passwords in our database 
  ``` 
  ' UNION SELECT username || ' ' || password FROM users-- 
  ```
