@@ -22,6 +22,16 @@ public class DictionaryAttackPasswordCracker {
         return sb.toString();
     }
 
+    public static byte[] hexStringToBytes(String s) {
+        byte[] bytes = new byte[s.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int index = i * 2;
+            int j = Integer.parseInt(s.substring(index, index + 2), 16);
+            bytes[i] = (byte) j;
+        }
+        return bytes;
+    }
+
     public static void findPassword() {
         BufferedReader reader;
         try {
@@ -74,6 +84,7 @@ public class DictionaryAttackPasswordCracker {
 
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         hashToFind = getHash(password);
+
         System.out.println("Passwords are not stored in a database, but the hash of a user's password is\n" +
                 "In order for an attacker to obtain your password, he or she will need to compare the hash of a given text string against the given hash stored in a database\n" +
                 "If these values match, the attacker knows your password\n" +
