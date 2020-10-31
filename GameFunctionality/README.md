@@ -13,7 +13,7 @@ GameEffects.java
  
 ### DictionaryAttackPasswordCracker.java  
   
- make sure to unzip the **rockyou.txt.zip** file before running this program also make sure to **not add rockyou.txt** to git 
+ make sure to unzip the **rockyou.txt.zip** file before running this program and make sure to **not add rockyou.txt** to git 
  
 ### SQLInjection.java  
 
