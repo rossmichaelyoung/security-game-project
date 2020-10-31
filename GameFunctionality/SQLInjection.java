@@ -28,12 +28,13 @@ public class SQLInjection {
         ResultSet rs = s.executeQuery(sql);
         int columnCount = rs.getMetaData().getColumnCount();
         while (rs.next()) {
-            String row = "";
+            StringBuilder row = new StringBuilder();
             for(int i = 1; i <= columnCount; i++) {
-                row += rs.getString(i);
+                row.append(rs.getString(i));
             }
-            System.out.println(row);
+            System.out.println(row.toString());
         }
+        System.out.println();
         rs.close();
         s.close();
     }
@@ -44,15 +45,23 @@ public class SQLInjection {
             conn = connect();
             try {
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println("Search for item");
-                String item = reader.readLine();
-                selectItem(item, conn);
+                System.out.println("Search for item or enter q to quit");
+                String search = reader.readLine();
+                while (!search.equals("q") && !search.equals("quit")) {
+                    try {
+                        selectItem(search, conn);
+                    } catch (SQLException e) {
+                        System.out.println("Error selecting item\n");
+                    }
+
+                    System.out.println("Search for item or enter q to quit");
+                    search = reader.readLine();
+                }
                 reader.close();
-            } catch (SQLException e) {
-                System.out.println("Error selecting item");
             } catch (IOException e) {
                 e.printStackTrace();
             }
+
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
