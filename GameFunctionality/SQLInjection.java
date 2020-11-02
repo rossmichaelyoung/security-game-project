@@ -1,13 +1,13 @@
-// connect to database
-// take input from GUI and run that in SQL select statement
-// output to GUI what you get from SQL select statement
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SQLInjection {
+    public static ArrayList<String> sqlTerms;
 
     public static Connection connect() throws SQLException, ClassNotFoundException {
         String url = "jdbc:postgresql://ec2-54-152-40-168.compute-1.amazonaws.com:5432/ddtc8vf18pmans";
@@ -18,9 +18,19 @@ public class SQLInjection {
     }
 
     public static void selectItem(String item, Connection conn) throws SQLException {
-        String sql = "SELECT name " +
+        for(String sqlTerm : sqlTerms) {
+            Pattern p = Pattern.compile(".*" + sqlTerm + ".*");
+            Matcher m = p.matcher(item);
+            if(m.find()) {
+                System.out.println("Found " + sqlTerm + " in " + item);
+                System.out.println("Use only SELECT statements\n");
+                return;
+            }
+        }
+
+        String sql = "SELECT item " +
                 "FROM inventory " +
-                "WHERE name ILIKE '"+item+"' AND available = TRUE";
+                "WHERE item ILIKE '%"+item+"%' AND available = TRUE";
 
         System.out.println("\nSQL statement about to be executed: \n" + sql + "\n");
 
@@ -44,6 +54,14 @@ public class SQLInjection {
         try {
             conn = connect();
             try {
+                sqlTerms = new ArrayList<>();
+                sqlTerms.add("DROP");
+                sqlTerms.add("DELETE");
+                sqlTerms.add("UPDATE");
+                sqlTerms.add("CREATE");
+                sqlTerms.add("WITH");
+                sqlTerms.add("ALTER");
+
                 BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
                 System.out.println("Search for item or enter q to quit");
                 String search = reader.readLine();
