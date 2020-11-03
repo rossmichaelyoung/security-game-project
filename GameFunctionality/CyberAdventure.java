@@ -16,23 +16,26 @@ class CyberAdventure {
 
     public static void main(String[] args) {
 
-        GameEffects gamefx = new GameEffects();
-        GUIproperties gui = new GUIproperties();
-
         JFrame frame = new JFrame();
         frame.setTitle("Cyber Adventure");
+        // panel on top of frame
+        JPanel panel_bckgrnd = new JPanel();    
 
-        Scanner in = new Scanner(System.in);
-        String name = player_name();
+        GUIproperties gui = new GUIproperties();
 
-        gamefx.greeting();
+        JPanel panel_game = new JPanel();
+        panel_game.setBackground(Color.GRAY);
 
-        JPanel intro = new JPanel();
-        intro = gui.intro_panel();
-        // intro.setSize(new Dimension(1300, 720));
-        // JButton intro_button = new JButton();
-        JButton intro_button = gui.intro_button(frame);
-        
+        // add panel to add button
+        JPanel panel_buttons = new JPanel();
+        panel_buttons.setBackground(Color.DARK_GRAY);
+        JButton cont_button = gui.continue_button(panel_buttons);
+        JButton exit_button = gui.exit_button(panel_buttons);
+
+        // Scanner in = new Scanner(System.in);
+        // String name = player_name();
+
+        // layout = gui.panel();        
 
         // System.out.print("Player name: ");
         // name = in.nextLine();
@@ -48,17 +51,38 @@ class CyberAdventure {
         // gamefx.loading_bar();
         
 
-        /* ***** FRAME COMPONENTS ***** */
+        /* ***** MAIN PANEL COMPONENTS ***** */ 
+        panel_bckgrnd = new JPanel();
+        // add layout to lower panel for button alignment
+        LayoutManager box_layout = new BoxLayout(panel_bckgrnd, BoxLayout.Y_AXIS);
+        Box boxes[] = new Box[2];
+        boxes[0] = Box.createVerticalBox();
+        boxes[1] = Box.createVerticalBox();
+        panel_bckgrnd.setBackground(Color.WHITE);
+        panel_bckgrnd.setLayout(box_layout);
+        panel_bckgrnd.add(boxes[0]);
+        panel_bckgrnd.add(boxes[1]);
 
-        // frame.add(intro_button);
-
-        frame.setSize(1400, 800);
-        // frame.getContentPane().setLayout(new BoxLayout(frame.getContentPane(), BoxLayout.Y_AXIS));
-        frame.setLayout(new GridLayout(2, 1));
+        panel_game.setPreferredSize(new Dimension(1400, 680));
+        panel_game.setAlignmentX(Component.CENTER_ALIGNMENT);
+        boxes[0].add(panel_game);
+        panel_buttons.setPreferredSize(new Dimension(1400, 120));
+        boxes[1].add(panel_buttons);
         
-        frame.add(intro);
-        frame.add(intro_button);
+        // game content displayed
+        panel_bckgrnd.add(panel_game);
 
+        
+        // buttons panel
+        panel_bckgrnd.add(panel_buttons);   // add panel with buttons
+        panel_buttons.add(cont_button);     // add buttons
+        panel_buttons.add(Box.createRigidArea(new Dimension(1070, 0)));
+        panel_buttons.add(exit_button);     // add buttons
+        panel_buttons.add(Box.createRigidArea(new Dimension(0, 100)));
+
+        /* ***** MAIN FRAME PROPERTIES ***** */
+        frame.getContentPane().add(panel_bckgrnd);
+        frame.setSize(1400, 800);
         final Color LIGHT_BLUE = new Color(51, 153, 255);
         frame.getContentPane().setBackground(LIGHT_BLUE);
         frame.setVisible(true);
