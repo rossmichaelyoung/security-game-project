@@ -26,13 +26,6 @@ public class GUIproperties extends JFrame {
         return button;
     } // end intro_button()
 
-    public JLabel ascii_greeting(JPanel panel, String str) {
-        JLabel label = new JLabel();
-        panel.setLayout(new GridLayout());
-
-        return label;
-    }
-
 
     /**
      *
