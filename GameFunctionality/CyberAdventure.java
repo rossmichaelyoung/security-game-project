@@ -4,6 +4,7 @@ import java.util.*;
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 
 
 class CyberAdventure {
@@ -43,7 +44,12 @@ class CyberAdventure {
         JPanel panel_game = new JPanel();
         panel_game.setBackground(Color.GRAY);
 
+        
         GUIproperties gui = new GUIproperties();
+        // call function to ask user's name
+        String name = gui.player_greeting();
+        gui.get_player_name(name);
+
 
         // add panel to add button
         JPanel panel_buttons = new JPanel();
@@ -71,10 +77,16 @@ class CyberAdventure {
         panel_buttons.setPreferredSize(new Dimension(1400, 120));
         boxes[1].add(panel_buttons);
         
-        // game content displayed
-        panel_bckgrnd.add(panel_game);
 
-        // buttons panel
+        /* ***** ADD GAME CONTENT HERE ***** */
+        JLabel player_name = gui.greeting_label(panel_game, name);
+        panel_game.add(player_name);
+
+
+        /* ***** DISPLAY PANEL WHERE GAME CONTENT WILL BE PLACED ***** */
+        panel_bckgrnd.add(panel_game);        
+
+        /* ***** BUTTONS PANEL COMPONENTS ***** */ 
         panel_bckgrnd.add(panel_buttons);   // add panel with buttons
         panel_buttons.add(exit_button);     // add buttons
         panel_buttons.add(Box.createRigidArea(new Dimension(1070, 0))); // spacing between buttons
@@ -90,6 +102,13 @@ class CyberAdventure {
 
 
         /* ***** PLAYER STATUS FRAME PROPERTIES ***** */
+        LayoutManager status_layout = new BoxLayout(status_bckgrnd, BoxLayout.X_AXIS);
+        status_bckgrnd.setLayout(status_layout);
+
+        JLabel question_label = gui.question_label(status_bckgrnd);
+        status_bckgrnd.setBorder(new EmptyBorder(10, 10, 10, 10)); // spacing between border and text
+        status_bckgrnd.add(question_label);
+
         status_frame.add(status_bckgrnd);
 
         status_frame.setSize(400, 500);
@@ -105,7 +124,7 @@ class CyberAdventure {
         options_frame.setSize(400, 500);
         final Color VERY_LIGHT_BLUE = new Color(51, 204, 255);
         options_frame.getContentPane().setBackground(VERY_LIGHT_BLUE);
-        options_frame.setVisible(true);
+        // options_frame.setVisible(true);
         options_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
