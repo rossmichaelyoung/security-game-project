@@ -135,14 +135,14 @@ public class BruteForcePasswordCracker {
         System.out.println("The " + hashingAlgorithm + " hash of your password, " + password + ", is " + bytestoHexString(hashToFind));
         System.out.println("The value this algorithm is searching for is the hash of your password\n");
 
-        BigInteger n = new BigInteger(Integer.toString(length));
-        BigInteger numToCheck = n.pow(cs.length());
+        BigInteger n = new BigInteger(Integer.toString(cs.length()));
+        BigInteger numToCheck = n.pow(length);
         String possibilities = numToCheck.toString();
         System.out.println("This brute force password cracking algorithm will need to check at most " + possibilities + " passwords to find your password");
-        System.out.println("The number of possible passwords for a given password and the character space it uses is (the password's length) ^ (the character space's length)\n");
+        System.out.println("The number of possible passwords for a given password and the character space it uses is (the character space's length) ^ (the password's length)\n");
         System.out.println("Example: \n" +
                 "Your password, " + password + ", has length " + length + " and the character space you said you are using has length " + cs.length() + "\n" +
-                length + "^" + cs.length() + " = " + possibilities + "\n");
+                cs.length() + "^" + length + " = " + possibilities + "\n");
 
         System.out.println("Press Enter to Begin");
         reader.readLine();
