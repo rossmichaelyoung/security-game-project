@@ -23,3 +23,14 @@ GameEffects.java
  ``` 
  ' UNION SELECT username || ' ' || password FROM users-- 
  ```
+
+### SecurityGame.java
+
+To compile:
+```
+javac -cp ".:../Resources/postgresql-42.2.18.jar" SecurityGame.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java
+```
+To run:
+```
+java -cp ".:../Resources/postgresql-42.2.18.jar" SecurityGame
+```
