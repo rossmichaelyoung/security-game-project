@@ -42,17 +42,17 @@ public class SecurityGame extends JPanel {
             String search = mainTextArea.getText();
             mainTextArea.setText("");
             resultsTextArea.setText("");
-            if (currentGame == Game.SQL) {
-                try {
-                    String s = sqlInjection.selectItem(search);
-                    resultsTextArea.setText(s);
-                } catch (SQLException sqlException) {
-                    mainTextArea.setText("Error selecting item\n");
-                }
-                System.out.println("contents = " + search);
-            } else if (currentGame == Game.Password) {
-                String s = dictionaryAttackPasswordCracker.findPassword(search);
-                resultsTextArea.setText(s);
+            switch(currentGame) {
+                case SQL:
+                    try {
+                        String result = sqlInjection.selectItem(search);
+                        resultsTextArea.setText(result);
+                    } catch (SQLException sqlException) {
+                        mainTextArea.setText("Error selecting item\n");
+                    }
+                case Password:
+                    String result = dictionaryAttackPasswordCracker.findPassword(search);
+                    resultsTextArea.setText(result);
             }
         });
 
