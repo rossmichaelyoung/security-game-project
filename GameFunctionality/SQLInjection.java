@@ -8,6 +8,7 @@ import java.util.regex.Pattern;
 
 public class SQLInjection {
     public static ArrayList<String> sqlTerms;
+    public static Connection conn;
 
     public static Connection connect() throws SQLException, ClassNotFoundException {
         String url = "jdbc:postgresql://ec2-54-152-40-168.compute-1.amazonaws.com:5432/ddtc8vf18pmans";
@@ -17,14 +18,18 @@ public class SQLInjection {
         return DriverManager.getConnection(url, user, password);
     }
 
-    public static void selectItem(String item, Connection conn) throws SQLException {
+    public static void closeConnection() throws SQLException {
+        conn.close();
+    }
+
+    public static String selectItem(String item) throws SQLException {
+        StringBuilder output = new StringBuilder();
         for(String sqlTerm : sqlTerms) {
             Pattern p = Pattern.compile(".*" + sqlTerm + ".*");
             Matcher m = p.matcher(item);
             if(m.find()) {
-                System.out.println("Found " + sqlTerm + " in " + item);
-                System.out.println("Use only SELECT statements\n");
-                return;
+                output.append("Found ").append(sqlTerm).append(" in ").append(item).append("\n").append("Use only SELECT statements\n");
+                return output.toString();
             }
         }
 
@@ -32,59 +37,64 @@ public class SQLInjection {
                 "FROM inventory " +
                 "WHERE item ILIKE '%"+item+"%' AND available = TRUE";
 
-        System.out.println("\nSQL statement about to be executed: \n" + sql + "\n");
+        output.append("SQL Statement Executed: \n").append(sql).append("\n\n");
 
         Statement s = conn.createStatement();
         ResultSet rs = s.executeQuery(sql);
         int columnCount = rs.getMetaData().getColumnCount();
+        output.append("Results: \n");
         while (rs.next()) {
             StringBuilder row = new StringBuilder();
             for(int i = 1; i <= columnCount; i++) {
                 row.append(rs.getString(i));
             }
-            System.out.println(row.toString());
+            output.append(row.toString()).append("\n");
         }
-        System.out.println();
+
         rs.close();
         s.close();
+
+        return output.toString();
     }
 
-    public static void main(String[] args) {
-        Connection conn;
+    public SQLInjection() {
         try {
             conn = connect();
-            try {
-                sqlTerms = new ArrayList<>();
-                sqlTerms.add("DROP");
-                sqlTerms.add("DELETE");
-                sqlTerms.add("UPDATE");
-                sqlTerms.add("CREATE");
-                sqlTerms.add("WITH");
-                sqlTerms.add("ALTER");
-
-                BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-                System.out.println("Search for item or enter q to quit");
-                String search = reader.readLine();
-                while (!search.equals("q") && !search.equals("quit")) {
-                    try {
-                        selectItem(search, conn);
-                    } catch (SQLException e) {
-                        System.out.println("Error selecting item\n");
-                    }
-
-                    System.out.println("Search for item or enter q to quit");
-                    search = reader.readLine();
-                }
-                reader.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            conn.close();
+            sqlTerms = new ArrayList<>();
+            sqlTerms.add("DROP");
+            sqlTerms.add("DELETE");
+            sqlTerms.add("UPDATE");
+            sqlTerms.add("CREATE");
+            sqlTerms.add("WITH");
+            sqlTerms.add("ALTER");
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error connecting to database");
         } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Error finding JDBC PostgreSQL Driver");
+        }
+    }
+
+    public static void main(String[] args) {
+        new SQLInjection();
+        try {
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            System.out.println("Search for item or enter q to quit");
+            String search = reader.readLine();
+            while (!search.equals("q") && !search.equals("quit")) {
+                try {
+                    String results = selectItem(search);
+                    System.out.println(results);
+                } catch (SQLException e) {
+                    System.out.println("Error selecting item\n");
+                }
+
+                System.out.println("Search for item or enter q to quit");
+                search = reader.readLine();
+            }
+            reader.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

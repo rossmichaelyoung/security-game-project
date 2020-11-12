@@ -8,7 +8,6 @@ public class DictionaryAttackPasswordCracker {
     public static MessageDigest md;
     public static byte[] hashToFind;
     public static String hashingAlgorithm;
-    public static boolean found = false;
 
     public static byte[] getHash(String password) throws NoSuchAlgorithmException {
         return md.digest(password.getBytes());
@@ -32,11 +31,12 @@ public class DictionaryAttackPasswordCracker {
         return bytes;
     }
 
-    public static void findPassword() {
+    public static void findAndPrintPassword() {
+        boolean found = false;
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    "../rockyou.txt"
+                    "../Resources/rockyou.txt"
             ));
 
             String currentPassword;
@@ -60,6 +60,53 @@ public class DictionaryAttackPasswordCracker {
             }
         } catch (IOException | NoSuchAlgorithmException e) {
             System.out.println("Error opening and/or reading password dictionary");
+        }
+    }
+
+    public static String findPassword(String hash) {
+        boolean found = false;
+        hashToFind = hexStringToBytes(hash);
+        String output = "";
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new FileReader(
+                    "../Resources/rockyou.txt"
+            ));
+
+            String currentPassword;
+            start = System.currentTimeMillis();
+            int attempts = 0;
+            while ((currentPassword = reader.readLine()) != null) {
+                attempts++;
+                byte[] currentPasswordHash = getHash(currentPassword);
+                // System.out.println(currentPassword);
+                if(Arrays.equals(hashToFind, currentPasswordHash)) {
+                    found = true;
+                    long timeToFind = System.currentTimeMillis() - start;
+                    double displayTime = timeToFind / 1000.0;
+                    output += "The password for the hash " + bytestoHexString(hashToFind) + " is " + currentPassword + "\n" +
+                              "Password found in " + displayTime + " seconds\n" +
+                              "It took " + attempts + " attempts to find this password\n";
+                    break;
+                }
+            }
+            reader.close();
+            if(!found) {
+                output += "Password could not be cracked with dictionary attack\n";
+            }
+        } catch (IOException | NoSuchAlgorithmException e) {
+            output += "Error opening and/or reading password dictionary\n";
+        }
+
+        return output;
+    }
+
+    public DictionaryAttackPasswordCracker() {
+        hashingAlgorithm = "MD5";
+        try {
+            md = MessageDigest.getInstance(hashingAlgorithm);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("Please Enter a Valid Hashing Algorithm for Your Password (MD5, SHA-1, SHA-256, etc)");
         }
     }
 
@@ -101,6 +148,6 @@ public class DictionaryAttackPasswordCracker {
         reader.readLine();
         reader.close();
 
-        findPassword();
+        findAndPrintPassword();
     }
 }
