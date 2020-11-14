@@ -52,7 +52,7 @@ public class BruteForcePasswordCracker {
         }
     }
 
-    public static void findPasswordGivenHash(int index, int length, StringBuilder sb, String cs, byte[] hashToFind, StringBuilder output, long start) throws NoSuchAlgorithmException {
+    public static void findPasswordGivenHashRecursive(int index, int length, StringBuilder sb, String cs, byte[] hashToFind, StringBuilder output, long start) throws NoSuchAlgorithmException {
         if(index == length) {
             String currentPassword = sb.toString();
             byte[] currentPasswordHash = getHash(currentPassword);
@@ -69,8 +69,35 @@ public class BruteForcePasswordCracker {
 
         for(int i = 0; i < cs.length() && !found && index < length; i++) {
             sb.setCharAt(index, cs.charAt(i));
-            findPasswordGivenHash(index+1, length, sb, cs, hashToFind, output, start);
+            findPasswordGivenHashRecursive(index+1, length, sb, cs, hashToFind, output, start);
         }
+    }
+
+    public static String findPasswordGivenHash(String password, String characterSpace) {
+        StringBuilder result = new StringBuilder();
+        try {
+            byte[] passwordHash = getHash(password);
+            StringBuilder sb = new StringBuilder();
+            sb.setLength(password.length());
+            long start = System.currentTimeMillis();
+            try {
+                findPasswordGivenHashRecursive(0, password.length(), sb, characterSpace, passwordHash, result, start);
+            } catch (NoSuchAlgorithmException e) {
+                result.append("Error Finding Password");
+            }
+        } catch (NoSuchAlgorithmException e) {
+            result.append("Error Finding Password");
+        }
+
+        return result.toString();
+    }
+
+    public boolean getFound() {
+        return found;
+    }
+
+    public void setFound(boolean f) {
+        found = f;
     }
 
     public BruteForcePasswordCracker() {

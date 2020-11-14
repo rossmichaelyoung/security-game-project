@@ -35,8 +35,6 @@ public class SecurityGame extends JPanel {
         searchTextArea = new JTextArea();
 
         // Set the contents of the JTextArea.
-        String output = "";
-        searchTextArea.setText(output);
         searchTextArea.setLineWrap(true);
         searchTextArea.setWrapStyleWord(true);
 
@@ -115,24 +113,15 @@ public class SecurityGame extends JPanel {
                     utilityTextArea.setText(sqlStatement);
                     break;
                 case Password:
+                    resultsTextArea.setText("");
                     String result = dictionaryAttackPasswordCracker.findPasswordGivenHash(search);
                     resultsTextArea.setText(result);
                     break;
                 case StrongPasswords:
-                    byte[] passwordHash;
-                    StringBuilder output1 = new StringBuilder();
                     resultsTextArea.setText("");
-                    try {
-                        passwordHash = bruteForcePasswordCracker.getHash(search);
-                        StringBuilder sb = new StringBuilder();
-                        sb.setLength(search.length());
-                        long start = System.currentTimeMillis();
-                        bruteForcePasswordCracker.findPasswordGivenHash(0, search.length(), sb, bruteForcePasswordCracker.LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS, passwordHash, output1, start);
-                        resultsTextArea.setText(output1.toString());
-                    } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-                        output1.append("Could not find password");
-                    }
-                    resultsTextArea.setText(output1.toString());
+                    bruteForcePasswordCracker.setFound(false);
+                    result = bruteForcePasswordCracker.findPasswordGivenHash(search, bruteForcePasswordCracker.LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS);
+                    resultsTextArea.setText(result);
                     break;
                 case PhysicalAspects:
                     break;
@@ -263,6 +252,10 @@ public class SecurityGame extends JPanel {
                     currentGame = Game.StrongPasswords;
                     panel_game.remove(utilityPanel);
                     utilityPanel.setVisible(false);
+                    searchTextArea.setText("");
+                    resultsTextArea.setText("");
+                    utilityTextArea.setText("");
+
                     mainButton.setText("Brute Force Attack");
                     secondaryButton.setText("Dictionary Attack");
                     secondaryButton.setVisible(true);
