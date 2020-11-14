@@ -9,13 +9,43 @@ import javax.swing.border.EmptyBorder;
 
 class CyberAdventure {
 
-
-    public static String player_name() {
-        String name = "";
-        return name;
-    } // end player_prompt()
-
+    public static PhysicalAspects physicalAspects;
     public static void main(String[] args) {
+
+        GUIproperties gui = new GUIproperties();  
+        physicalAspects = new PhysicalAspects();
+
+
+        /* ***** PHYSICAL ASPECTS GAME COMPONENTS ***** */
+        // JFrame physaspects_frame = new JFrame();
+        // JPanel panel_physaspects = new JPanel();
+        // JPanel panel_question = new JPanel();
+        // JPanel panel_answer = new JPanel();
+        // JPanel panel_choices = new JPanel();
+        // /* call interface layout function */
+        // physical.interface_layout(physaspects_frame, panel_physaspects, panel_question, panel_answer, panel_choices);
+        // panel_physaspects.setBorder(new EmptyBorder(50, 20, 20, 20));
+
+        // /* question 1 */
+        // JTextField answer = physical.answer_input();
+        // JLabel scene1 = physical.scene_1();
+        // JLabel choices1 = physical.scene_1_choices();
+        // JButton submit_b = physical.submit();
+        // panel_answer.add(answer);
+        // panel_answer.add(submit_b);
+        // panel_question.add(scene1);
+        // panel_question.add(panel_answer);
+        // panel_choices.add(choices1);
+
+        
+        // panel_physaspects.add(panel_question);
+        // panel_physaspects.add(panel_choices);
+        // physaspects_frame.add(panel_physaspects);
+
+        // physaspects_frame.setSize(1000, 500);
+        // physaspects_frame.setVisible(true);
+        // physaspects_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
 
         /* ***** PLAYER STATUS COMPONENTS ***** */
         JFrame status_frame = new JFrame();
@@ -34,70 +64,66 @@ class CyberAdventure {
 
 
         /* ***** GANE CONTENT FRAME COMPONENTS ***** */
-        // layers: frame -> panel_bckgrnd -> panel_game + panel_buttons
-
+        /* layers: frame -> panel_bckgrnd -> panel_game + panel_buttons */
         JFrame frame = new JFrame();
         frame.setTitle("Cyber Adventure");
-        // panel on top of frame
+        /* panel on top of frame */
         JPanel panel_bckgrnd = new JPanel();  
 
         JPanel panel_game = new JPanel();
         panel_game.setBackground(Color.GRAY);
 
-        
-        GUIproperties gui = new GUIproperties();
-        // call function to ask user's name
-        String name = gui.player_greeting();
-        gui.get_player_name(name);
+        /* call function to ask user's name */
+        // String name = gui.ask_name();
+        // gui.get_player_name(name);
 
 
-        // add panel to add button
+        /* add panel to add button */
         JPanel panel_buttons = new JPanel();
         panel_buttons.setBackground(Color.DARK_GRAY);
-        JButton cont_button = gui.continue_button(panel_buttons);
+        String b_label = "CONTINUE";
+        JButton cont_button = gui.continue_button(panel_buttons, b_label);
         JButton exit_button = gui.exit_button(panel_buttons);
-
+        
 
         /* ***** MAIN PANEL COMPONENTS ***** */ 
-        // setting up button layout and main window design
-        panel_bckgrnd = new JPanel();
-        // add layout to lower panel for button alignment
-        LayoutManager box_layout = new BoxLayout(panel_bckgrnd, BoxLayout.Y_AXIS);
-        Box boxes[] = new Box[2];
-        boxes[0] = Box.createVerticalBox(); // where game content will be displayed
-        boxes[1] = Box.createVerticalBox(); // where buttons are displayed
-        panel_bckgrnd.setBackground(Color.WHITE);
-        panel_bckgrnd.setLayout(box_layout);
-        panel_bckgrnd.add(boxes[0]);
-        panel_bckgrnd.add(boxes[1]);
-
-        panel_game.setPreferredSize(new Dimension(1400, 680));
-        panel_game.setAlignmentX(Component.CENTER_ALIGNMENT);
-        boxes[0].add(panel_game);
-        panel_buttons.setPreferredSize(new Dimension(1400, 120));
-        boxes[1].add(panel_buttons);
+        /* call function to set up button layout and main window design */
+        gui.interface_layout(panel_bckgrnd, panel_game, panel_buttons);
         
 
         /* ***** ADD GAME CONTENT HERE ***** */
-        JLabel player_name = gui.greeting_label(panel_game, name);
-        panel_game.add(player_name);
+        /* spacing between border and content */
+        panel_game.setBorder(new EmptyBorder(50, 20, 20, 20));
+
+        /* add player name */
+        // JLabel player_name = gui.greeting_label(name);
+        // JOptionPane.showMessageDialog(null, player_name);
+        /* update frame to have player name displayed */
+        // frame.setTitle("Cyber Adventure - Currently Playing: " + name);
+        // physical.info();
+        /* show message to tell user what to do */
+        String click_to_cont = "Click \"CONTINUE\" to continue >>> ";
+        JLabel proceed = gui.standard_label(click_to_cont);
+        proceed.setText(click_to_cont);
+        panel_game.add(proceed);
 
 
         /* ***** DISPLAY PANEL WHERE GAME CONTENT WILL BE PLACED ***** */
-        panel_bckgrnd.add(panel_game);        
+        panel_bckgrnd.add(panel_game); 
+
 
         /* ***** BUTTONS PANEL COMPONENTS ***** */ 
         panel_bckgrnd.add(panel_buttons);   // add panel with buttons
         panel_buttons.add(exit_button);     // add buttons
-        panel_buttons.add(Box.createRigidArea(new Dimension(1070, 0))); // spacing between buttons
+        panel_buttons.add(Box.createRigidArea(new Dimension(710, 0))); // spacing between buttons
         panel_buttons.add(cont_button);     // add buttons
-        panel_buttons.add(Box.createRigidArea(new Dimension(0, 100))); // spacing between buttons        
+        panel_buttons.add(Box.createRigidArea(new Dimension(0, 120))); // spacing between buttons        
 
 
         /* ***** MAIN FRAME PROPERTIES ***** */
         frame.getContentPane().add(panel_bckgrnd);
-        frame.setSize(1400, 800);
-        frame.setVisible(true);
+        frame.setSize(1100, 700);
+        // frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
@@ -114,8 +140,8 @@ class CyberAdventure {
         status_frame.setSize(400, 500);
         final Color LIGHT_BLUE = new Color(51, 153, 255);
         status_frame.getContentPane().setBackground(LIGHT_BLUE);
-        status_frame.setVisible(true);
-        status_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        status_frame.setVisible(false);
+        status_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
 
         /* ***** ANSWER OPTIONS FRAME PROPERTIES ***** */
@@ -124,8 +150,49 @@ class CyberAdventure {
         options_frame.setSize(400, 500);
         final Color VERY_LIGHT_BLUE = new Color(51, 204, 255);
         options_frame.getContentPane().setBackground(VERY_LIGHT_BLUE);
-        // options_frame.setVisible(true);
-        options_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        options_frame.setVisible(false);
+        options_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+
+
+        /* ***** ACTIONLISTENER FOR CONTINUE AND EXIT BUTTONS ***** */
+        cont_button.addActionListener(new ActionListener() {
+            boolean hasBeenClicked = false;
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(!hasBeenClicked) {
+                    proceed.setText(null);
+
+                    String b_label = "HIDE STATUS";
+                    cont_button.setText(b_label);
+
+                    status_frame.setVisible(true);
+                    options_frame.setVisible(true);
+
+                    status_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                    options_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);             
+                }
+                else if(hasBeenClicked) {
+                    String b_label = "SHOW STATUS";
+                    cont_button.setText(b_label);
+                    status_frame.dispose();
+                    options_frame.dispose();
+                    status_frame.setVisible(false);
+                    options_frame.setVisible(false);
+                }
+                hasBeenClicked = !hasBeenClicked;
+                
+            }   // end void actionPerformed()
+        });     // end actionListener()
+
+        exit_button.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                status_frame.dispose();
+                options_frame.dispose();
+                frame.dispose();
+            } // end void actionPerformed()
+        }); // end actionListener()
+
 
 
     }   // end main
