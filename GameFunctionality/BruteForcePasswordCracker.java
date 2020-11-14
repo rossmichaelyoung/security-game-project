@@ -1,5 +1,7 @@
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -30,7 +32,7 @@ public class BruteForcePasswordCracker {
         return sb.toString();
     }
 
-    public static void findPassword(int index, int length, StringBuilder sb, String cs) throws NoSuchAlgorithmException {
+    public static void findAndPrintPassword(int index, int length, StringBuilder sb, String cs) throws NoSuchAlgorithmException {
         if(index == length) {
             String currentPassword = sb.toString();
             byte[] currentPasswordHash = getHash(currentPassword);
@@ -39,15 +41,44 @@ public class BruteForcePasswordCracker {
 
             if(Arrays.equals(hashToFind, currentPasswordHash)) {
                 found = true;
-                long timeToFind = System.currentTimeMillis() - start;
-                double displayTime = timeToFind / 1000.0;
-                System.out.println("Password found in " + displayTime + " seconds\n");
+                BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
+                System.out.println("Password found in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n");
             }
         }
 
         for(int i = 0; i < cs.length() && !found && index < length; i++) {
             sb.setCharAt(index, cs.charAt(i));
-            findPassword(index+1, length, sb, cs);
+            findAndPrintPassword(index+1, length, sb, cs);
+        }
+    }
+
+    public static void findPasswordGivenHash(int index, int length, StringBuilder sb, String cs, byte[] hashToFind, StringBuilder output, long start) throws NoSuchAlgorithmException {
+        if(index == length) {
+            String currentPassword = sb.toString();
+            byte[] currentPasswordHash = getHash(currentPassword);
+
+            if(Arrays.equals(hashToFind, currentPasswordHash)) {
+                found = true;
+                BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
+                output.append("The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n" +
+                        "Password found in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n" +
+                        "Using character space " + cs);
+                return;
+            }
+        }
+
+        for(int i = 0; i < cs.length() && !found && index < length; i++) {
+            sb.setCharAt(index, cs.charAt(i));
+            findPasswordGivenHash(index+1, length, sb, cs, hashToFind, output, start);
+        }
+    }
+
+    public BruteForcePasswordCracker() {
+        hashingAlgorithm = "MD5";
+        try {
+            md = MessageDigest.getInstance(hashingAlgorithm);
+        } catch (NoSuchAlgorithmException e) {
+            System.out.println("Please Enter a Valid Hashing Algorithm for Your Password (MD5, SHA-1, SHA-256, etc)");
         }
     }
 
@@ -151,7 +182,7 @@ public class BruteForcePasswordCracker {
         StringBuilder sb = new StringBuilder();
         sb.setLength(length);
         start = System.currentTimeMillis();
-        findPassword(0, length, sb, cs);
+        findAndPrintPassword(0, length, sb, cs);
     }
 
 }
