@@ -22,6 +22,7 @@ public class SecurityGame extends JPanel {
     public static JTextArea resultsTextArea;
     public static JTextArea utilityTextArea;
     public static JTextArea helpTextArea;
+    public static JComboBox<String> characterSpaceOptions;
 
     public SecurityGame() {
         currentGame = Game.SQL;
@@ -120,7 +121,8 @@ public class SecurityGame extends JPanel {
                 case StrongPasswords:
                     resultsTextArea.setText("");
                     bruteForcePasswordCracker.setFound(false);
-                    result = bruteForcePasswordCracker.findPasswordGivenHash(search, bruteForcePasswordCracker.LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS);
+                    String selectedCharacterSpace = String.valueOf(characterSpaceOptions.getSelectedItem());
+                    result = bruteForcePasswordCracker.findPasswordGivenHash(search, selectedCharacterSpace);
                     resultsTextArea.setText(result);
                     break;
                 case PhysicalAspects:
@@ -260,6 +262,11 @@ public class SecurityGame extends JPanel {
                     secondaryButton.setText("Dictionary Attack");
                     secondaryButton.setVisible(true);
                     bruteForcePasswordCracker = new BruteForcePasswordCracker();
+
+                    String[] choices = {"Lowercase Characters Only","Lowercase and Uppercase Characters", "Lowercase Characters and Numbers","Lowercase and Uppercase Characters and Numbers"};
+                    characterSpaceOptions = new JComboBox<String>(choices);
+                    characterSpaceOptions.setVisible(true);
+                    panel_game.add(characterSpaceOptions);
                     break;
                 case StrongPasswords:
                     break;

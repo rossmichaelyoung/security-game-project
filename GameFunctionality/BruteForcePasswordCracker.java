@@ -73,7 +73,26 @@ public class BruteForcePasswordCracker {
         }
     }
 
-    public static String findPasswordGivenHash(String password, String characterSpace) {
+    public static String findPasswordGivenHash(String password, String selectedCharacterSpace) {
+        String characterSpace;
+        switch(selectedCharacterSpace) {
+            case "Lowercase Characters Only":
+                characterSpace = LOWER_CASE_LETTERS;
+                break;
+            case "Lowercase and Uppercase Characters":
+                characterSpace = LOWER_AND_UPPER_CASE_LETTERS;
+                break;
+            case "Lowercase Characters and Numbers":
+                characterSpace = LOWER_CASE_LETTERS_AND_DIGITS;
+                break;
+            case "Lowercase and Uppercase Characters and Numbers":
+                characterSpace = LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
+                break;
+            default:
+                characterSpace = LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
+                break;
+        }
+
         StringBuilder result = new StringBuilder();
         try {
             byte[] passwordHash = getHash(password);
@@ -89,7 +108,7 @@ public class BruteForcePasswordCracker {
             result.append("Error Finding Password");
         }
 
-        return result.toString();
+        return result.length() > 0 ? result.toString() : "Could not crack password with character space " + characterSpace;
     }
 
     public boolean getFound() {
