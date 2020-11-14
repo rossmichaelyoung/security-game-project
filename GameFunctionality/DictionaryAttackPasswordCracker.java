@@ -72,7 +72,7 @@ public class DictionaryAttackPasswordCracker {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    "../Resources/rockyou.txt"
+                    "../Resources/dictionary.txt"
             ));
 
             String currentPassword;
