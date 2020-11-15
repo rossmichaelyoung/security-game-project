@@ -9,6 +9,10 @@ import java.util.regex.Pattern;
 public class SQLInjection {
     public static ArrayList<String> sqlTerms;
     public static Connection conn;
+    public enum Progress {
+        DatabaseType, TableNames, PublicTableNames, ColumnNames, UsernamesAndPasswords, Done
+    }
+    public static Progress progress;
 
     public static Connection connect() throws SQLException, ClassNotFoundException {
         String url = "jdbc:postgresql://ec2-54-152-40-168.compute-1.amazonaws.com:5432/ddtc8vf18pmans";
@@ -37,8 +41,6 @@ public class SQLInjection {
                 "FROM inventory " +
                 "WHERE item ILIKE '%"+item+"%' AND available = TRUE";
 
-        output.append("SQL Statement Executed: \n").append(sql).append("\n\n");
-
         Statement s = conn.createStatement();
         ResultSet rs = s.executeQuery(sql);
         int columnCount = rs.getMetaData().getColumnCount();
@@ -57,6 +59,14 @@ public class SQLInjection {
         return output.toString();
     }
 
+    public static void setProgress(Progress p) {
+        progress = p;
+    }
+
+    public static Progress getProgress() {
+        return progress;
+    }
+
     public SQLInjection() {
         try {
             conn = connect();
@@ -67,6 +77,7 @@ public class SQLInjection {
             sqlTerms.add("CREATE");
             sqlTerms.add("WITH");
             sqlTerms.add("ALTER");
+            setProgress(Progress.DatabaseType);
         } catch (SQLException e) {
             e.printStackTrace();
             System.out.println("Error connecting to database");

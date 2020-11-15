@@ -1,4 +1,6 @@
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
@@ -36,7 +38,7 @@ public class DictionaryAttackPasswordCracker {
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    "../Resources/rockyou.txt"
+                    "../Resources/dictionary.txt"
             ));
 
             String currentPassword;
@@ -63,30 +65,26 @@ public class DictionaryAttackPasswordCracker {
         }
     }
 
-    public static String findPassword(String hash) {
+    public static String findPasswordGivenHash(String hash) {
         boolean found = false;
         hashToFind = hexStringToBytes(hash);
         String output = "";
         BufferedReader reader;
         try {
             reader = new BufferedReader(new FileReader(
-                    "../Resources/rockyou.txt"
+                    "../Resources/dictionary.txt"
             ));
 
             String currentPassword;
             start = System.currentTimeMillis();
-            int attempts = 0;
             while ((currentPassword = reader.readLine()) != null) {
-                attempts++;
                 byte[] currentPasswordHash = getHash(currentPassword);
                 // System.out.println(currentPassword);
                 if(Arrays.equals(hashToFind, currentPasswordHash)) {
                     found = true;
-                    long timeToFind = System.currentTimeMillis() - start;
-                    double displayTime = timeToFind / 1000.0;
-                    output += "The password for the hash " + bytestoHexString(hashToFind) + " is " + currentPassword + "\n" +
-                              "Password found in " + displayTime + " seconds\n" +
-                              "It took " + attempts + " attempts to find this password\n";
+                    BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
+                    output += "The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n" +
+                              "Password found in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n";
                     break;
                 }
             }
