@@ -12,7 +12,7 @@ public class GUIproperties extends JFrame {
     JPanel panel = new JPanel();
 
     /* ***** SETTING UP INTERFACE LAYOUT ***** */
-    public void interface_layout(JPanel p1, JPanel p2, JPanel p3) {
+    public void interface_layout(JPanel p1, JPanel p2, JPanel p3, JPanel game, JPanel resultsPanel, JPanel utilityPanel) {
         LayoutManager box_layout = new BoxLayout(p1, BoxLayout.Y_AXIS);
         Box boxes[] = new Box[2];
         boxes[0] = Box.createVerticalBox(); // where game content will be displayed
@@ -28,6 +28,10 @@ public class GUIproperties extends JFrame {
         p3.setAlignmentX(Component.CENTER_ALIGNMENT);
         p3.setPreferredSize(new Dimension(1050, 120));
         boxes[1].add(p3);
+        p3.add(game);
+        p3.add(resultsPanel);
+        p3.add(utilityPanel);
+
     } // end interface_layout()
 
     // public void player_status_interface() {
