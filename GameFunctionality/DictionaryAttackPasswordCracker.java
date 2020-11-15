@@ -84,7 +84,7 @@ public class DictionaryAttackPasswordCracker {
                     found = true;
                     BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
                     output += "The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n" +
-                              "Password found in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n";
+                              "Password cracked in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n";
                     break;
                 }
             }

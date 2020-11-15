@@ -32,6 +32,16 @@ public class BruteForcePasswordCracker {
         return sb.toString();
     }
 
+    public static byte[] hexStringToBytes(String s) {
+        byte[] bytes = new byte[s.length() / 2];
+        for (int i = 0; i < bytes.length; i++) {
+            int index = i * 2;
+            int j = Integer.parseInt(s.substring(index, index + 2), 16);
+            bytes[i] = (byte) j;
+        }
+        return bytes;
+    }
+
     public static void findAndPrintPassword(int index, int length, StringBuilder sb, String cs) throws NoSuchAlgorithmException {
         if(index == length) {
             String currentPassword = sb.toString();
@@ -52,8 +62,15 @@ public class BruteForcePasswordCracker {
         }
     }
 
-    public static void findPasswordGivenHashRecursive(int index, int length, StringBuilder sb, String cs, byte[] hashToFind, StringBuilder output, long start) throws NoSuchAlgorithmException {
-        if(index == length) {
+    public static void findPasswordGivenHashRecursive(int index, int length, StringBuilder sb, String cs, byte[] hashToFind, StringBuilder output, long start, int totalTimeAllotted) throws NoSuchAlgorithmException {
+        double currentTimeRunning = (System.currentTimeMillis() - start) / 1000.0;
+        if(currentTimeRunning > totalTimeAllotted) {
+            found = true;
+            output.append("Could not crack password within allotted amount of time");
+            return;
+        }
+
+        if(index == length && !found) {
             String currentPassword = sb.toString();
             byte[] currentPasswordHash = getHash(currentPassword);
 
@@ -61,7 +78,7 @@ public class BruteForcePasswordCracker {
                 found = true;
                 BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
                 output.append("The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n" +
-                        "Password found in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n" +
+                        "Password cracked in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n" +
                         "Using character space " + cs);
                 return;
             }
@@ -69,46 +86,38 @@ public class BruteForcePasswordCracker {
 
         for(int i = 0; i < cs.length() && !found && index < length; i++) {
             sb.setCharAt(index, cs.charAt(i));
-            findPasswordGivenHashRecursive(index+1, length, sb, cs, hashToFind, output, start);
+            findPasswordGivenHashRecursive(index+1, length, sb, cs, hashToFind, output, start, totalTimeAllotted);
         }
     }
 
-    public static String findPasswordGivenHash(String password, String selectedCharacterSpace) {
-        String characterSpace;
-        switch(selectedCharacterSpace) {
-            case "Lowercase Characters Only":
-                characterSpace = LOWER_CASE_LETTERS;
-                break;
-            case "Lowercase and Uppercase Characters":
-                characterSpace = LOWER_AND_UPPER_CASE_LETTERS;
-                break;
-            case "Lowercase Characters and Numbers":
-                characterSpace = LOWER_CASE_LETTERS_AND_DIGITS;
-                break;
-            case "Lowercase and Uppercase Characters and Numbers":
-                characterSpace = LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
-                break;
-            default:
-                characterSpace = LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
-                break;
-        }
+    public static String findPasswordGivenHash(String passwordHash, String selectedCharacterSpace, int passwordLength, int totalTimeAllotted) {
+        String characterSpace = getCharacterSpace(selectedCharacterSpace);
 
         StringBuilder result = new StringBuilder();
+        StringBuilder sb = new StringBuilder();
+        sb.setLength(passwordLength);
+        byte[] hash = hexStringToBytes(passwordHash);
+        long start = System.currentTimeMillis();
         try {
-            byte[] passwordHash = getHash(password);
-            StringBuilder sb = new StringBuilder();
-            sb.setLength(password.length());
-            long start = System.currentTimeMillis();
-            try {
-                findPasswordGivenHashRecursive(0, password.length(), sb, characterSpace, passwordHash, result, start);
-            } catch (NoSuchAlgorithmException e) {
-                result.append("Error Finding Password");
-            }
+            findPasswordGivenHashRecursive(0, passwordLength, sb, characterSpace, hash, result, start, totalTimeAllotted);
         } catch (NoSuchAlgorithmException e) {
             result.append("Error Finding Password");
         }
 
         return result.length() > 0 ? result.toString() : "Could not crack password with character space " + characterSpace;
+    }
+
+    public static String getCharacterSpace(String selectedCharacterSpace) {
+        switch(selectedCharacterSpace) {
+            case "Lowercase Characters Only":
+                return LOWER_CASE_LETTERS;
+            case "Lowercase and Uppercase Characters":
+                return LOWER_AND_UPPER_CASE_LETTERS;
+            case "Lowercase Characters and Numbers":
+                return LOWER_CASE_LETTERS_AND_DIGITS;
+            default:
+                return LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
+        }
     }
 
     public boolean getFound() {
@@ -117,6 +126,22 @@ public class BruteForcePasswordCracker {
 
     public void setFound(boolean f) {
         found = f;
+    }
+
+    public static boolean checkCharacterSpace(String password, String cs) {
+        int length = password.length();
+        switch (cs) {
+            case "Lowercase Characters Only":
+                return password.matches("^[a-z]{" + length + "}$");
+            case "Lowercase and Uppercase Characters":
+                return password.matches("^[a-zA-Z]{" + length + "}$");
+            case "Lowercase Characters and Numbers":
+                return password.matches("^[a-z0-9]{" + length + "}$");
+            case "Lowercase and Uppercase Characters and Numbers":
+                return password.matches("^[a-zA-Z0-9]{" + length + "}$");
+        }
+
+        return true;
     }
 
     public BruteForcePasswordCracker() {
