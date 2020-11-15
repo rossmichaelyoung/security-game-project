@@ -1,4 +1,3 @@
-
 import java.util.*;
 
 import java.awt.*;
@@ -8,7 +7,7 @@ import javax.swing.*;
 /* All button properties and other related content placed in here */
 
 public class GUIproperties extends JFrame {
-    
+
     JFrame frame = new JFrame();
     JPanel panel = new JPanel();
 
@@ -29,30 +28,30 @@ public class GUIproperties extends JFrame {
         p3.setAlignmentX(Component.CENTER_ALIGNMENT);
         p3.setPreferredSize(new Dimension(1050, 120));
         boxes[1].add(p3);
-    }   // end interface_layout()
+    } // end interface_layout()
 
     // public void player_status_interface() {
 
     // }
 
-    public String ask_name() {   // ask for user's name
+    public String ask_name() { // ask for user's name
         JLabel label = new JLabel("Hey there, what's your name?");
         String name = JOptionPane.showInputDialog(label);
 
         return name;
-    }   // end playerGreeting()
+    } // end playerGreeting()
 
-    public String get_player_name(String name) {    // return player name
+    public String get_player_name(String name) { // return player name
         return name;
-    }   // end getPlayerName()
+    } // end getPlayerName()
 
-    public JLabel greeting_label(String name) {   // display player name
+    public JLabel greeting_label(String name) { // display player name
         JLabel player_label = new JLabel("Welcome, " + name + "!");
         player_label.setFont(new Font("Arial", Font.PLAIN, 25));
         player_label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         return player_label;
-    }   // end greeting_label()
+    } // end greeting_label()
 
     public JLabel standard_label(String str) { // standard font sizing and position for all labels
         JLabel label = new JLabel();
@@ -62,14 +61,23 @@ public class GUIproperties extends JFrame {
         return label;
     } // end greeting_label()
 
-    public JButton continue_button(JPanel panel, String b_label) {
-        JButton button = new JButton(b_label); 
+    public JButton help_button(JPanel panel, String b_label) {
+        JButton button = new JButton(b_label);
         button.setFont(new Font("Arial", Font.BOLD, 17));
         button.setPreferredSize(new Dimension(200, 60));
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         return button;
-    }   // end intro_button()
+    } // end intro_button()
+
+    public JButton continue_button(JPanel panel) {
+        JButton button = new JButton("CONTINUE");
+        button.setFont(new Font("Arial", Font.BOLD, 17));
+        button.setPreferredSize(new Dimension(200, 60));
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+
+        return button;
+    } // end intro_button()
 
     public JButton exit_button(JPanel panel) {
         JButton button = new JButton("EXIT");
@@ -80,7 +88,6 @@ public class GUIproperties extends JFrame {
         return button;
     } // end intro_button()
 
-
     /* ***** SETTING UP PLAYER STATUS LAYOUT ***** */
     public JLabel question_label(JPanel panel) { // display player name
         JLabel question_label = new JLabel("Write your question here.");
@@ -89,14 +96,9 @@ public class GUIproperties extends JFrame {
         return question_label;
     } // end greeting_label()
 
-
-
-
-
-
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
-}   // end class
+} // end class
