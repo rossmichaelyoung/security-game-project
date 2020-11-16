@@ -22,11 +22,14 @@ class CyberAdventure extends JPanel {
     }
 
     public static Game currentGame;
+    public static JFrame answerFrame;
     public static JFrame helpFrame;
     public static JPanel panel_game;
     public static JPanel resultsPanel;
     public static JPanel utilityPanel;
     public static JPanel panel_buttons;
+    public static JPanel timeoutPanel;
+    public static JPanel characterSpacePanel;
     public static JScrollPane resultsPane;
     public static JButton mainButton;
     public static JButton answerButton;
@@ -39,7 +42,6 @@ class CyberAdventure extends JPanel {
     public static JComboBox<String> timeOptions;
     public static int numAttempts;
 
-
     public static void show_hide_help(JFrame frame, JButton help_button, JLabel label) {
         help_button.addActionListener(new ActionListener() {
             boolean hasBeenClicked = false;
@@ -51,7 +53,7 @@ class CyberAdventure extends JPanel {
 
                     String b_label = "HIDE HELP";
                     help_button.setText(b_label);
-                    
+
                     frame.setVisible(true);
                     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 } else if (hasBeenClicked) {
@@ -78,6 +80,7 @@ class CyberAdventure extends JPanel {
         /* ***** RESULTS COMPONENT ***** */
         resultsPanel = new JPanel();
         resultsTextArea = new JTextArea();
+        resultsTextArea.setEditable(false);
         resultsPane = new JScrollPane(resultsTextArea);
         resultsPane.setPreferredSize(new Dimension(820, 200));
         resultsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
@@ -176,6 +179,13 @@ class CyberAdventure extends JPanel {
         panel_buttons.add(answerButton);
     }
 
+    public static void setAnswerButtonForNextStep() {
+        numAttempts = 0;
+        answerButton.setVisible(false);
+        answerButton.setText("SHOW ANSWER");
+        answerFrame.setVisible(false);
+    }
+
     public static void setupInteractiveGames() {
         setUpResultsPanel();
         setUpUtilityPanel();
@@ -233,6 +243,11 @@ class CyberAdventure extends JPanel {
                         sqlInjection.setProgress(SQLInjection.Progress.Done);
                         break;
                     }
+
+                    if(!sqlInjection.getProgress().equals(SQLInjection.Progress.Done)) {
+                        numAttempts++;
+                    }
+
                     String sqlStatement = "SQL Statement Executed From Your Search, " + search + " : \n" +
                             "SELECT item \n" +
                             "FROM inventory \n" +
@@ -242,12 +257,16 @@ class CyberAdventure extends JPanel {
                         if (sqlInjection.getProgress().equals(SQLInjection.Progress.DatabaseType) && result.contains("PostgreSQL 12.4")) {
                             sqlInjection.setProgress(SQLInjection.Progress.PublicTableNames);
 
+                            setAnswerButtonForNextStep();
+
                             String helpAndHints = "<html>Now that you know its a PostgreSQL database, you now want to find the names of the tables in this database <br>" +
                                     "Use the SELECT statement to return the column table_name FROM the table information_schema.tables <br><br>" +
                                     "Remember to start your SQL command with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
                         } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.PublicTableNames) && result.contains("users")) {
                             sqlInjection.setProgress(SQLInjection.Progress.ColumnNames);
+
+                            setAnswerButtonForNextStep();
 
                             String helpAndHints = "You now see there are two public tables – inventory and users. \n" +
                                     "The users tables likely holds interesting information we want to extract. \n" +
@@ -260,6 +279,8 @@ class CyberAdventure extends JPanel {
                         } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.ColumnNames) && result.contains("password")) {
                             sqlInjection.setProgress(SQLInjection.Progress.UsernamesAndPasswords);
 
+                            setAnswerButtonForNextStep();
+
                             String helpAndHints = "You now know the users table has two columns – username and password \n" +
                                     "Since we want both but a UNION can only return the same number of items in the prior SELECT statement, \n" +
                                     "you have to use string concatenation to get both column values to return \n" +
@@ -270,6 +291,8 @@ class CyberAdventure extends JPanel {
                             helpTextArea.setText(helpAndHints);
                         } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.UsernamesAndPasswords) && result.contains("johnsmith") && result.contains("dc4b56ff4967374b261a29cd4a90580d")) {
                             sqlInjection.setProgress(SQLInjection.Progress.Done);
+
+                            setAnswerButtonForNextStep();
 
                             String helpAndHints = "The seemingly random strings of 32 characters is a 128-bit hash of a user's real password";
                             helpTextArea.setText(helpAndHints);
@@ -294,6 +317,7 @@ class CyberAdventure extends JPanel {
                     break;
                 case StrongPasswords:
                     resultsTextArea.setText("");
+
                     String passwordHash;
                     mainButton.setPreferredSize(new Dimension(175, 5));
 
@@ -442,16 +466,17 @@ class CyberAdventure extends JPanel {
                     characterSpaceOptions = new JComboBox<String>(csChoices);
                     characterSpaceOptions.setVisible(true);
 
-                    JPanel characterSpacePanel = new JPanel();
+                    characterSpacePanel = new JPanel();
                     characterSpacePanel.add(characterSpaceLabel);
                     characterSpacePanel.add(characterSpaceOptions);
 
                     panel_game.remove(resultsPanel);
                     panel_game.add(characterSpacePanel);
 
+                    timeoutPanel = new JPanel();
+                    JLabel timeoutLabel = new JLabel("Select Time Limit in Seconds for Cracking Password:");
                     JPanel timeoutPanel = new JPanel();
                     timeoutPanel.add(Box.createRigidArea(new Dimension(180, 0)));
-                    JLabel timeoutLabel = new JLabel("Select Length of Time in Seconds to Crack Password:");
                     timeoutPanel.add(timeoutLabel);
                     String[] timeChoices = {"30","45","60","90","120","180","240","300"};
                     timeOptions = new JComboBox<String>(timeChoices);
@@ -460,32 +485,11 @@ class CyberAdventure extends JPanel {
                     panel_game.add(timeoutPanel);
                     panel_game.add(resultsPanel);
 
-                    JPanel togglePanel = new JPanel();
-                    JButton toggle = new JButton("Switch to Dictionary Attack");
-
-                    mainButton.setPreferredSize(new Dimension(145, 20));
-
-                    toggle.addActionListener(event -> {
-                        if(mainButton.getText().equals("Brute Force Attack")) {
-                            mainButton.setPreferredSize(new Dimension(145, 20));
-                            mainButton.setText("Dictionary Attack");
-                            toggle.setText("Switch to Brute Force Attack");
-                            characterSpacePanel.setVisible(false);
-                            timeoutPanel.setVisible(false);
-                        } else {
-                            mainButton.setPreferredSize(new Dimension(145, 20));
-                            mainButton.setText("Brute Force Attack");
-                            toggle.setText("Switch to Dictionary Attack");
-                            characterSpacePanel.setVisible(true);
-                            timeoutPanel.setVisible(true);
-                        }
-                    });
-                    togglePanel.add(Box.createRigidArea(new Dimension(440, 0)));
-                    togglePanel.add(toggle);
-                    togglePanel.add(Box.createRigidArea(new Dimension(50, 0)));
-
-                    panel_game.add(togglePanel);
+                    answerButton.setVisible(true);
+                    answerButton.setText("Switch to Dictionary Attack");
+                    answerButton.setSize(new Dimension(300, 60));
                     resultsPane.setPreferredSize(new Dimension(900, 250));
+                    mainButton.setPreferredSize(new Dimension(145, 20));
                     break;
                 case StrongPasswords:
                     break;
@@ -577,13 +581,11 @@ class CyberAdventure extends JPanel {
 
         /* ***** BUTTONS PANEL COMPONENTS ***** */
         panel_bckgrnd.add(panel_buttons); // add panel with buttons
+        panel_buttons.add(Box.createRigidArea(new Dimension(10, 140))); // spacing between buttons
         panel_buttons.add(exit_button); // add buttons
-        panel_buttons.add(Box.createRigidArea(new Dimension(200, 0))); // spacing between buttons
         createAnswerButton();
         panel_buttons.add(help_button); // add buttons
-        panel_buttons.add(Box.createRigidArea(new Dimension(20, 20))); // spacing between buttons
         panel_buttons.add(continue_button);
-        panel_buttons.add(Box.createRigidArea(new Dimension(0, 120))); // spacing between buttons
 
         /* ***** MAIN FRAME PROPERTIES ***** */
         frame.getContentPane().add(panel_bckgrnd);
