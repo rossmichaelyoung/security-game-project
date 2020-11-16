@@ -13,6 +13,7 @@ public class BruteForcePasswordCracker {
     public static final String LOWER_AND_UPPER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static final String LOWER_CASE_LETTERS_AND_DIGITS = "abcdefghijklmnopqrstuvwxyz0123456789";
     public static final String LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public static final String LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS_AND_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*+=<>?:;/`~|,._(){}\"'";
 
     public static boolean found = false;
     public static long start;
@@ -116,7 +117,7 @@ public class BruteForcePasswordCracker {
             case "Lowercase Characters and Numbers":
                 return LOWER_CASE_LETTERS_AND_DIGITS;
             default:
-                return LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
+                return LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS_AND_SYMBOLS;
         }
     }
 
@@ -139,6 +140,8 @@ public class BruteForcePasswordCracker {
                 return password.matches("^[a-z0-9]{" + length + "}$");
             case "Lowercase and Uppercase Characters and Numbers":
                 return password.matches("^[a-zA-Z0-9]{" + length + "}$");
+            case "Lowercase and Uppercase Characters, Number, and Special Characters":
+                return password.matches("^[a-zA-Z0-9!@#$%^&*+=<>?:;/`~|,._(){}\"']{" + length + "}$");
         }
 
         return true;

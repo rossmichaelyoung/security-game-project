@@ -15,6 +15,7 @@ class CyberAdventure extends JPanel {
     public static SQLInjection sqlInjection;
     public static DictionaryAttackPasswordCracker dictionaryAttackPasswordCracker;
     public static BruteForcePasswordCracker bruteForcePasswordCracker;
+    public static GUIproperties gui;
 
     public enum Game {
         SQL, Password, PhysicalAspects, StrongPasswords, End
@@ -24,12 +25,19 @@ class CyberAdventure extends JPanel {
     public static JFrame helpFrame;
     public static JPanel panel_game;
     public static JPanel resultsPanel;
+    public static JPanel utilityPanel;
+    public static JPanel panel_buttons;
+    public static JScrollPane resultsPane;
     public static JButton mainButton;
+    public static JButton answerButton;
+    public static JLabel searchLabel;
     public static JTextArea searchTextArea;
     public static JTextArea resultsTextArea;
     public static JTextArea helpTextArea;
+    public static JTextArea utilityTextArea;
     public static JComboBox<String> characterSpaceOptions;
     public static JComboBox<String> timeOptions;
+    public static int numAttempts;
 
 
     public static void show_hide_help(JFrame frame, JButton help_button, JLabel label) {
@@ -66,12 +74,12 @@ class CyberAdventure extends JPanel {
         return currentGame;
     }
 
-    public static void setResultsPanel() {
+    public static void setUpResultsPanel() {
         /* ***** RESULTS COMPONENT ***** */
         resultsPanel = new JPanel();
         resultsTextArea = new JTextArea();
-        JScrollPane resultsPane = new JScrollPane(resultsTextArea);
-        resultsPane.setPreferredSize(new Dimension(680, 240));
+        resultsPane = new JScrollPane(resultsTextArea);
+        resultsPane.setPreferredSize(new Dimension(820, 200));
         resultsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         /* ***** RESULTS PANEL PROPERTIES ***** */
@@ -80,8 +88,97 @@ class CyberAdventure extends JPanel {
         resultsPanel.add(Box.createRigidArea(new Dimension(95, 0)));
     }
 
+    public static void setUpUtilityPanel() {
+        /* ***** UTILITY COMPONENT ***** */
+        utilityPanel = new JPanel();
+        utilityTextArea = new JTextArea();
+        JScrollPane utilityPane = new JScrollPane(utilityTextArea);
+        utilityPane.setPreferredSize(new Dimension(820, 100));
+        utilityPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        /* ***** UTILITY PANEL PROPERTIES ***** */
+        utilityPanel.setVisible(true);
+        utilityPanel.add(utilityPane);
+    }
+
+    public static void createAnswerButton() {
+        answerButton = gui.answer_button(panel_buttons);
+        answerButton.setVisible(false);
+        answerButton.addActionListener(event -> {
+            numAttempts = 0;
+            JFrame answerFrame = new JFrame();
+            answerFrame.setTitle("SQL Injection Answer");
+            JTextArea answerTextArea = new JTextArea();
+            JScrollPane answerPane = new JScrollPane(answerTextArea);
+            answerPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+            answerFrame.setSize(1200, 300);
+            answerFrame.setVisible(true);
+            answerFrame.getContentPane().add(answerPane);
+
+            SQLInjection.Progress currentProgress = sqlInjection.getProgress();
+            String answer = "";
+            switch (currentProgress) {
+                case DatabaseType:
+                    answer = "ANSWER: \n" +
+                            "' UNION SELECT version()-- \n\n" +
+                            "Explanation: \n" +
+                            "You need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
+                            "If you look at the lowest portion of the game screen, you will see that whatever you search will appear between two single quote (ignore the % symbols for now) \n" +
+                            "These quotes tell the database to treat whatever is between them as something to search for in the database and will not be executed as actual SQL code. \n" +
+                            "We want the database to execute the commands we give it and thus we need to start with a single quote so the database will think we are searching for nothing in particular --> '%' is what the database will think we are searching for \n\n" +
+                            "We end our SQL injection with -- because this is the command to let the SQL database know everything afterwards should be treated as a comment and not executed. \n" +
+                            "Therefore, by adding the -- at the end, we tell the database to ignore this part of the pre-written command, %' AND available = TRUE \n\n" +
+                            "Finally, we include the UNION command before the SELECT statement in order to return the database version with the results of the pre-written SQL command, which is SELECT item FROM inventory WHERE item ILIKE '%' \n" +
+                            "That pre-written command means to return all items in the inventory table that anything (the % symbol is a wildcard meaning it can be anything)";
+                    break;
+                case PublicTableNames:
+                    answer = "ANSWER: \n" +
+                            "' UNION SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'-- \n\n" +
+                            "Explanation: \n" +
+                            "Once again, you need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
+                            "You also still need to include a UNION command before your SELECT statement to return the items from your injected SELECT statement \n" +
+                            "Finally, you still need to include the comment command (--) at the end of your SQL command in order for the database to ignore the rest of the pre-written command \n\n" +
+                            "Since we know its a PostgreSQL database now, we can query the information_schema.tables for all the public tables in the database \n" +
+                            "In order to extract usernames and passwords, we need to know the name of the table that might contain them";
+                    break;
+                case ColumnNames:
+                    answer = "ANSWER: \n" +
+                            "' UNION SELECT column_name FROM information_schema.columns WHERE table_name = 'users'-- \n\n" +
+                            "Explanation: \n" +
+                            "Once again, you need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
+                            "You also still need to include a UNION command before your SELECT statement to return the items from your injected SELECT statement \n" +
+                            "Finally, you still need to include the comment command (--) at the end of your SQL command in order for the database to ignore the rest of the pre-written command \n\n" +
+                            "Since we know there is a table called users, which is likely where usernames and passwords are stored, we need the column names from this table \n" +
+                            "Once we have the column names, we will be able to issue a SELECT statement on the users table with these column names \n" +
+                            "Similar to the previous answer, we can SELECT the column names in users from the information_schema.columns \n";
+                    break;
+                case UsernamesAndPasswords:
+                    answer = "ANSWER: \n" +
+                            "' UNION SELECT username || ' ' || password FROM users-- \n\n" +
+                            "Explanation: \n" +
+                            "Once again, you need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
+                            "You also still need to include a UNION command before your SELECT statement to return the items from your injected SELECT statement \n" +
+                            "Finally, you still need to include the comment command (--) at the end of your SQL command in order for the database to ignore the rest of the pre-written command \n\n" +
+                            "This step requires a trick – string concatenation \n" +
+                            "A UNION of two SELECT only works properly if both SELECT statements return the same number of items\n" +
+                            "In our case, the pre-written, first SELECT statement only returns one column, the item from inventory \n" +
+                            "Since we want both the username and its corresponding password, we need to concatenate them together using the string concatenation command ||\n" +
+                            "username || ' ' || password means we want to concatenate the username, a space (this is the ' ' between the two sets of ||), and the password";
+                    break;
+                default:
+                    break;
+            }
+
+            answerTextArea.setText(answer);
+            answerButton.setVisible(false);
+        });
+        panel_buttons.add(answerButton);
+    }
+
     public static void setupInteractiveGames() {
-        setResultsPanel();
+        setUpResultsPanel();
+        setUpUtilityPanel();
 
         /* ***** HELP COMPONENTS ***** */
         helpFrame = new JFrame();
@@ -115,8 +212,10 @@ class CyberAdventure extends JPanel {
         searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         searchPane.setPreferredSize(new Dimension(680, 50));
         searchPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-
         searchPanel.setVisible(true);
+
+        searchLabel = new JLabel("Search for an item in inventory:");
+        searchPanel.add(searchLabel);
         searchPanel.add(searchPane);
         searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -124,6 +223,8 @@ class CyberAdventure extends JPanel {
         mainButton.setPreferredSize(new Dimension(138, 20));
         mainButton.addActionListener(e -> {
             String search = searchTextArea.getText();
+            search = search.replaceAll("\\n", "");
+            search = search.replaceAll("\\r", "");
             searchTextArea.setText("");
 
             switch(currentGame) {
@@ -139,20 +240,11 @@ class CyberAdventure extends JPanel {
                     try {
                         String result = sqlInjection.selectItem(search);
                         if (sqlInjection.getProgress().equals(SQLInjection.Progress.DatabaseType) && result.contains("PostgreSQL 12.4")) {
-                            sqlInjection.setProgress(SQLInjection.Progress.TableNames);
+                            sqlInjection.setProgress(SQLInjection.Progress.PublicTableNames);
 
                             String helpAndHints = "<html>Now that you know its a PostgreSQL database, you now want to find the names of the tables in this database <br>" +
                                     "Use the SELECT statement to return the column table_name FROM the table information_schema.tables <br><br>" +
                                     "Remember to start your SQL command with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
-                            helpTextArea.setText(helpAndHints);
-                        } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.TableNames) && result.contains("pg_publication_tables")) {
-                            sqlInjection.setProgress(SQLInjection.Progress.PublicTableNames);
-
-                            String helpAndHints = "Next, you need to narrow down the list of tables in the database to just tables that are public \n" +
-                                    "Use the SELECT statement to return the column table_name FROM the table information_schema.tables, but \n" +
-                                    "now use a WHERE clause to specify that the table_schema has to be public \n" +
-                                    "\n" +
-                                    "Remember to start your SQL command with a single quote (') and a UNION statement and to end your SQL statement with a comment command, which is -- \n";
                             helpTextArea.setText(helpAndHints);
                         } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.PublicTableNames) && result.contains("users")) {
                             sqlInjection.setProgress(SQLInjection.Progress.ColumnNames);
@@ -189,7 +281,11 @@ class CyberAdventure extends JPanel {
                         resultsTextArea.setText(result);
                     }
 
-                    resultsTextArea.append("\n\n" + sqlStatement);
+                    utilityTextArea.setText(sqlStatement);
+
+                    if(numAttempts == 6) {
+                        answerButton.setVisible(true);
+                    }
                     break;
                 case Password:
                     resultsTextArea.setText("");
@@ -253,18 +349,16 @@ class CyberAdventure extends JPanel {
 
         panel_game.add(searchPanel);
         panel_game.add(resultsPanel);
+        panel_game.add(utilityPanel);
     }
     
     public static void main(String[] args) {
-
-        GUIproperties gui = new GUIproperties();
-        PhysicalAspects phys = new PhysicalAspects();
-
         physicalAspects = new PhysicalAspects();
         sqlInjection = new SQLInjection();
         dictionaryAttackPasswordCracker = new DictionaryAttackPasswordCracker();
         bruteForcePasswordCracker = new BruteForcePasswordCracker();
         setCurrentGame(Game.PhysicalAspects);
+        numAttempts = 0;
 
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
@@ -277,6 +371,7 @@ class CyberAdventure extends JPanel {
 
         // Start Game
 //        SwingUtilities.invokeLater(SecurityGame::showFrame);
+        gui = new GUIproperties();
 
 
         /* ***** GAME CONTENT FRAME COMPONENTS ***** */
@@ -301,20 +396,22 @@ class CyberAdventure extends JPanel {
         gui.get_player_name(name);
 
         /* add panel to add button */
-        JPanel panel_buttons = new JPanel();
+        panel_buttons = new JPanel();
         panel_buttons.setBackground(Color.GRAY);
+        panel_buttons = new JPanel();
+        panel_buttons.setBackground(Color.DARK_GRAY);
         String b_label = "HIDE HELP";
         JButton help_button = gui.help_button(panel_buttons, b_label);
         // JButton imposter = gui.continue_button(panel_buttons);
         JButton continue_button = gui.continue_button(panel_buttons);
 
-        
+
 
         // JButton continue_button = new JButton();
         continue_button.addActionListener(e -> {
             help_button.setText("HIDE HELP");
 
-            JLabel scene = phys.scene_;
+            JLabel scene = physicalAspects.scene_;
             scene.setText(null);
 
             panel_bckgrnd.remove(panel_question);
@@ -327,18 +424,21 @@ class CyberAdventure extends JPanel {
                         setCurrentGame(Game.Password);
                         mainButton.setText("Crack Password");
                         searchTextArea.setText("");
+                        utilityTextArea.setText(resultsTextArea.getText());
                         resultsTextArea.setText("");
+                        searchLabel.setText("Enter Password Here:");
                     }
                     break;
                 case Password:
                     setCurrentGame(Game.StrongPasswords);
                     searchTextArea.setText("");
                     resultsTextArea.setText("");
+                    utilityPanel.setVisible(false);
 
                     mainButton.setText("Brute Force Attack");
 
                     JLabel characterSpaceLabel = new JLabel("Select Password's Character Space:");
-                    String[] csChoices = {"Lowercase Characters Only","Lowercase and Uppercase Characters", "Lowercase Characters and Numbers","Lowercase and Uppercase Characters and Numbers"};
+                    String[] csChoices = {"Lowercase Characters Only","Lowercase and Uppercase Characters", "Lowercase Characters and Numbers","Lowercase and Uppercase Characters and Numbers","Lowercase and Uppercase Characters, Number, and Special Characters"};
                     characterSpaceOptions = new JComboBox<String>(csChoices);
                     characterSpaceOptions.setVisible(true);
 
@@ -353,7 +453,7 @@ class CyberAdventure extends JPanel {
                     timeoutPanel.add(Box.createRigidArea(new Dimension(180, 0)));
                     JLabel timeoutLabel = new JLabel("Select Length of Time in Seconds to Crack Password:");
                     timeoutPanel.add(timeoutLabel);
-                    String[] timeChoices = {"30","45","60","90","120","180"};
+                    String[] timeChoices = {"30","45","60","90","120","180","240","300"};
                     timeOptions = new JComboBox<String>(timeChoices);
                     timeOptions.setVisible(true);
                     timeoutPanel.add(timeOptions);
@@ -385,13 +485,35 @@ class CyberAdventure extends JPanel {
                     togglePanel.add(Box.createRigidArea(new Dimension(50, 0)));
 
                     panel_game.add(togglePanel);
-
+                    resultsPane.setPreferredSize(new Dimension(900, 250));
                     break;
                 case StrongPasswords:
                     break;
                 case PhysicalAspects:
                     setCurrentGame(Game.SQL);
                     setupInteractiveGames();
+
+                    JFrame sqlExplanationFrame = new JFrame();
+                    sqlExplanationFrame.setTitle("SQL Injection");
+                    JTextArea sqlExplanationTextArea = new JTextArea();
+                    JScrollPane sqlExplanationPane = new JScrollPane(sqlExplanationTextArea);
+                    sqlExplanationPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+                    sqlExplanationFrame.setSize(new Dimension(1000, 150));
+                    sqlExplanationFrame.setVisible(true);
+                    sqlExplanationFrame.getContentPane().add(sqlExplanationPane);
+
+                    String sqlExplanation = "You are to perform an SQL Injection attack to retrieve the usernames and passwords stored in this store's database \n" +
+                            "An SQL Injection is essentially the act of typing in SQL code into the search bar instead of searching for items normally \n\n" +
+                            "The pre-written SQL command being used by the backend software is SELECT item FROM inventory WHERE item ILIKE '% whatever you searched %' AND available = TRUE \n" +
+                            "This command means the database is going to SELECT (and return) all the items FROM the inventory table that match whatever you searched for and are also available \n" +
+                            "An SQL Injection circumvents the intended logic of this pre-written SQL statement by inserting SQL code into the 'whatever you search' part \n" +
+                            "The current page has a search bar up top for a user to find current items in the store's inventory \n\n" +
+                            "Below the search bar is the area where result from your search are returned \n" +
+                            "The area lowest on the screen shows you the SQL statement executed by the store's backend software to find the item you searched for.\n" +
+                            "Use this lowest area on the screen to help you with your SQL injection \n";
+
+                    sqlExplanationTextArea.setText(sqlExplanation);
                     break;
                 case End:
                     break;
@@ -456,10 +578,10 @@ class CyberAdventure extends JPanel {
         /* ***** BUTTONS PANEL COMPONENTS ***** */
         panel_bckgrnd.add(panel_buttons); // add panel with buttons
         panel_buttons.add(exit_button); // add buttons
-        panel_buttons.add(Box.createHorizontalGlue());
-        panel_buttons.add(Box.createRigidArea(new Dimension(500, 0))); // spacing between buttons
+        panel_buttons.add(Box.createRigidArea(new Dimension(200, 0))); // spacing between buttons
+        createAnswerButton();
         panel_buttons.add(help_button); // add buttons
-        panel_buttons.add(Box.createRigidArea(new Dimension(0, 20))); // spacing between buttons
+        panel_buttons.add(Box.createRigidArea(new Dimension(20, 20))); // spacing between buttons
         panel_buttons.add(continue_button);
         panel_buttons.add(Box.createRigidArea(new Dimension(0, 120))); // spacing between buttons
 
