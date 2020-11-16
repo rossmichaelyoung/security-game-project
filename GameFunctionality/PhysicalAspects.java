@@ -13,8 +13,8 @@ public class PhysicalAspects {
     public static JPanel panel_answer = new JPanel();       // where text and submit is displayed
     public static JPanel panel_choices = new JPanel();      // where choices are displayed
 
-    public static JLabel intro = info();
-    public static JButton next = new JButton("NEXT >>>");
+//  public JLabel intro = info();
+    public JButton next = new JButton("NEXT >>>");
 
     public static JButton next_game = new JButton("NEXT >>>");
     public static JButton next_alt = new JButton("NEXT >>>"); // when switching roles, to sql
@@ -26,9 +26,9 @@ public class PhysicalAspects {
 
 
     /* ***** SET UP ***** */
-    public static void interface_layout(JFrame frame, JPanel p1, JPanel p2, JPanel p3, JPanel p4) {
-        frame = new JFrame();
-        frame.setTitle("Physical Aspects of Cybersecurity");
+    public void interface_layout(JFrame frame, JPanel panel_bckgrnd, JPanel p1, JPanel p2, JPanel p3, JPanel p4) {
+//        frame = new JFrame();
+//        frame.setTitle("Physical Aspects of Cybersecurity");
         p1 = new JPanel();
 
         LayoutManager layout = new BoxLayout(p1, BoxLayout.X_AXIS);
@@ -44,35 +44,35 @@ public class PhysicalAspects {
         p3 = new JPanel();
         p4 = new JPanel();
 
-        p2.setPreferredSize(new Dimension(400, 500));
+        p2.setPreferredSize(new Dimension(600, 500));
         p2.setAlignmentX(Component.CENTER_ALIGNMENT);
         box[0].add(p2);
         box[0].add(p3);
-        p4.setPreferredSize(new Dimension(600, 500));
+        p4.setPreferredSize(new Dimension(400, 500));
         p4.setAlignmentX(Component.LEFT_ALIGNMENT);
         box[1].add(p4);
 
-        panel_physaspects.setBorder(new EmptyBorder(50, 20, 20, 20));
+        panel_bckgrnd.setBorder(new EmptyBorder(50, 20, 20, 20));
 
-        physaspects_frame.setSize(1000, 500);
-        physaspects_frame.setVisible(true);
-        physaspects_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        physaspects_frame.setSize(1000, 500);
+//        physaspects_frame.setVisible(true);
+//        physaspects_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     } // end interface_layout()
 
-    public static JLabel info() { // introduction to game
+    public JLabel info() { // introduction to game
         String html = "<html>Occupation: ethical hacker <br><br>"
-                + "Your Task: You are hired by a private company that specializes <br>"
+                + "Your Task: You are hired by a private company that specializes "
                 + "in selling rare antiques to high-end customers. Recently, there <br>"
-                + "has been a rise in crime targetting websites selling high-end <br>"
+                + "has been a rise in crime targeting websites selling high-end "
                 + "products, and the company is worried that they might be a target. <br>"
                 + "So, they decided to hire you to test the security of their site. <br><br> </html>";
             JLabel label = new JLabel(html);
-            label.setFont(new Font("Arial", Font.PLAIN, 20));
+            label.setFont(new Font("Arial", Font.PLAIN, 10));
 
         return label;
     }
 
-    public static void intro_lesson() { // lesson on physical security
+    public void intro_lesson() { // lesson on physical security
         Runnable r = () -> {
             String html = "<html><body width='%1s'><h1>Cybersecurity Isn't Just About Coding</h1>" 
                     + "A misconception is that cybersecurity is all about coding and what happens in a computer. "
@@ -93,31 +93,33 @@ public class PhysicalAspects {
         SwingUtilities.invokeLater(r);
     }
 
-    public static JTextField answer_input() { // user input for answer choice
+    public JTextField answer_input() { // user input for answer choice
         JTextField answer = new JTextField(5);
 
         return answer;
     } // end answer_input()
 
-    public static JLabel display_answer(String str) { // display answer
+    public JLabel display_answer(String str) { // display answer
         JLabel label = new JLabel();
         label.setFont(new Font("Arial", Font.PLAIN, 20));
         return label;
     }   // end display_answer()
 
-    public static String get_answer(JTextField tf) { // pass in user response from text field
+    public String get_answer(JTextField tf) { // pass in user response from text field
         String answer = tf.getText();
         return answer;
     } // end get_answer()
 
-    public static JButton submit() { // submit response
+    public JButton submit() { // submit response
         JButton submit = new JButton("SUBMIT");
         return submit;
     } // end submit()
 
     /* QUESTION CONTENT */
-    public static JLabel scene() { // first scene of game
-        String html = "<html>To peform your tasks for the day, the manager has given you an access <br>"
+    public JLabel scene() { // first scene of game
+//        String task = to_str(info());
+
+        String html = "<html>To perform your tasks for the day, the manager has given you an access <br>"
                 + "card to enter the building and other authorized office spaces. <br><br>"
                 + "You walk towards a door locked by card authentication and notice someone <br>"
                 + "is suspiciously idling close to the door. What should you do? <br><br></html>";
@@ -128,7 +130,7 @@ public class PhysicalAspects {
         return label;
     }   // end scene()
 
-    public static JLabel scene_choices() { // answer choices for scene one
+    public JLabel scene_choices() { // answer choices for scene one
         String html = "<html>a) Walk towards the door and use your ID card to go in like normal. <br>"
                 + "   He's probably just waiting for someone. <br>" 
                 + "b) Try a different entrance. <br><br></html>";
@@ -140,24 +142,25 @@ public class PhysicalAspects {
     }   // end scene_choices()
     /* QUESTION CONTENT */
 
-    public static JLabel switch_occupation() { // message introducing SQL game
+    public JLabel switch_occupation() { // message introducing SQL game
         JLabel label = new JLabel();
         label.setFont(new Font("Arial", Font.PLAIN, 20));
 
         return label;
     }   // end switch_occupation()
 
-    public static String to_str(JLabel label) {
+    public String to_str(JLabel label) {
         label = new JLabel();
         String str = label.getText();
         return str;
     }   // end to_str()
     /* ***** SET UP ***** */
 
-    public static JLabel scene_ = scene();
-    public static JLabel choices_ = scene_choices();
+//    public JLabel initial_task = info();
+    public JLabel scene_ = scene();
+    public JLabel choices_ = scene_choices();
 
-    public static void add_panels(JTextField answer, JButton submit_b) {
+    public void add_panels(JPanel panel_physaspects, JTextField answer, JButton submit_b) {
         // answer = answer_input();
         // submit_b = submit();
 
@@ -175,16 +178,20 @@ public class PhysicalAspects {
 
     /* ***** GAME CONTENTS ***** */
     /* SCENE ONE */
-    public static JTextField answer = answer_input();
-    public static JButton submit_b = submit();
+    public JTextField answer = answer_input();
+    public JButton submit_b = submit();
 
-    public static void scene_one(JTextField answer, JButton submit_b) {
+    public void scene_one(JTextField answer, JButton submit_b, JPanel panel, JLabel proceed) {
+
         submit_b.addActionListener(new ActionListener() {
             boolean hasBeenClicked = false;
 
             @Override
             public void actionPerformed(final ActionEvent e) {
                 if(!hasBeenClicked) {
+//                    JLabel task = info();
+//                    task.setText(null);
+
                     String get_answer_tf = answer.getText(); // pass in user response
                     if(get_answer_tf.equals("a")) {
                         String html = "<html>You greet the person to dismiss suspicion and he greets you back. <br>"
@@ -194,6 +201,8 @@ public class PhysicalAspects {
 
                         choices_.setText(html);
                         scene_.setText(null);
+
+                        panel.remove(proceed);
 
                         panel_answer.remove(answer);
                         panel_answer.remove(submit_b);
@@ -205,6 +214,9 @@ public class PhysicalAspects {
                     else if(get_answer_tf.equals("b")) {
                         String html = "<html>Correct ! If possible, try another entrance. <br>"
                                 + "If not, make sure to close the door immediately after granted access. <br><br></html>";
+
+                        panel.remove(proceed);
+
                         choices_.setText(html);
                         scene_.setText(null);
 
@@ -219,6 +231,8 @@ public class PhysicalAspects {
                             + "He's probably just waiting for someone. <br>" 
                             + "b) Try a different entrance. <br><br></html>";
 
+                        panel.remove(proceed);
+
                         choices_.setText(html);
                     }
                 }   // end if clicked
@@ -229,6 +243,8 @@ public class PhysicalAspects {
                                 + "You scan your card and head into the room.<br></html>";
                         String html2 = "<html>Turns out, he just forgot his ID in his office. <br>"
                                 + "However, always be cautious of who you let in. They might cause trouble. </html>";
+
+                        panel.remove(proceed);
 
                         choices_.setText(html);
                         scene_.setText(null);
@@ -246,6 +262,8 @@ public class PhysicalAspects {
                         choices_.setText(html);
                         scene_.setText(null);
 
+                        panel.remove(proceed);
+
                         panel_answer.remove(answer);
                         panel_answer.remove(submit_b);
 
@@ -256,7 +274,9 @@ public class PhysicalAspects {
                             + "a) Walk towards the door and use your ID card to go in like normal. <br>"
                             + "He's probably just waiting for someone. <br>" 
                             + "b) Try a different entrance. <br><br></html>";
-                            
+
+                        panel.remove(proceed);
+
                         choices_.setText(html);
                     }
                 } // end else if
@@ -268,9 +288,9 @@ public class PhysicalAspects {
     /* END SCENE ONE */
 
     /* SCENE TWO */
-    public static JButton submit_b2 = submit();
+    public JButton submit_b2 = submit();
 
-    public static void scene_two(JTextField answer, JButton next_alt, JButton next_alt2) {
+    public void scene_two(JTextField answer, JButton submit_b2, JButton next_alt, JButton next_alt2) {
         next.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String html = "<html>You are about to begin your tasks, but the client suddenly asks for you. <br>"
@@ -313,7 +333,7 @@ public class PhysicalAspects {
 
                     } 
                     else if (get_answer_tf.equals("b")) {
-                        String html = "<html>You log out and shut the door behind you. <br><br></html>";
+                        String html = "<html>Great choice ! <br>You log out and shut the door behind you. <br><br></html>";
                         
                         scene_.setText(null);
                         choices_.setText(html);
@@ -324,8 +344,7 @@ public class PhysicalAspects {
                         panel_answer.remove(answer);
                         panel_answer.remove(submit_b2);
 
-                        JOptionPane.showMessageDialog(null, "Great choice !");
-                    } 
+                    }
                     else if (get_answer_tf.equals("c")) {
                         String html = "<html>Excellent ! Doing so makes it much more difficult for an outsider to get in. <br></html>";
                         scene_.setText(null);
@@ -399,14 +418,14 @@ public class PhysicalAspects {
     /* END SCENE TWO */
 
     /* SCENE TWO--ALTERNATIVE ROUTE #1 */
-    public static void scene_two_alt(JTextField answer, JButton go_to_sql) {    // link button to continue -> go_to_Sql
+    public void scene_two_alt(JTextField answer, JButton submit_b2, JButton next_alt, JButton go_to_sql) {    // link button to continue -> go_to_Sql
         next_alt.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String html = "<html><body width='%1s'><h1>** Role Switch ! **</h1>"
                         + "Occupation: the attacker <br> "
                         + "Task: You notice that your target left his office room. You are hired by<br> "
                         + "an anonymous client. Your task is to gain access to the database and extract<br> "
-                        + "crucial information from the company as discretly as possible. <br>"
+                        + "crucial information from the company as discretely as possible. <br>"
                         + "Good luck ! <br><br> </html>";
                 
                 scene_.setText(html);
@@ -423,7 +442,7 @@ public class PhysicalAspects {
      /* END SCENE TWO--ALTERNATIVE ROUTE #1 */   
 
      /* SCENE TWO--ALTERNATIVE ROUTE #2 */   
-    public static void scene_two_alt2(JTextField answer, JButton go_to_sql) {   // link button to continue -> go_to_Sql
+    public void scene_two_alt2(JTextField answer, JButton submit_b2, JButton next_alt2, JButton go_to_sql) {   // link button to continue -> go_to_Sql
         next_alt2.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String html = "<html><body width='%1s'><h1>** Role Switch ! **</h1>" + "Occupation: the attacker <br> "
@@ -432,7 +451,7 @@ public class PhysicalAspects {
                         +"However, the computer is locked ! <br>"
                         + "Luckily, you were able to figure it out because the user left a really lousy hint. <br>"
                         + "Your task is to figure out how to gain access to the database and extract crucial <br> "
-                        + "information from the company as discretly as possible. <br>"
+                        + "information from the company as discretely as possible. <br>"
                         + "Good luck ! <br><br> </html>";
 
                 scene_.setText(html);
@@ -448,34 +467,68 @@ public class PhysicalAspects {
     }   // end scene_two_alt2()
 /* END SCENE TWO--ALTERNATIVE ROUTE #2 */   
 
-public static void ethical_hacker_route(JTextField answer, JButton cont) {  // link button to continue -> go_to_Sql    
+public void ethical_hacker_route(JTextField answer, JButton cont) {  // link button to continue -> go_to_Sql
     next_game.addActionListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
-            String html = "<html>Your client wants you to perform two tasks: <br>"
-                    + "1. Perform an SQL Injection on the database to find vulnerabilities.<br>"
-                    + "2. Your client mentioned that some employees practice poor security <br>"
-                     + "protocols when coming to their own personal items. Perform a <br>"
-                     + "password crack to educate them on strong passwords. <br><br></html>";
+            String html = "<html>Looks like you know how important it is to be aware of your environment ! <br><br>"
+                    + "Remember, not everyone has good intentions. It's better to be safe than sorry when <br>"
+                    + "protecting your workspace, especially in a public area. <br<br>"
+                    + "Click \"CONTINUE\" to proceed. <br><br></html>";
 
             scene_.setText(html);
             choices_.setText(null);
 
             panel_choices.remove(next_game);
-            panel_choices.add(cont);
 
             panel_answer.remove(answer);
             panel_answer.remove(submit_b2);
-            }
+        }
     });
 }   // end ethical_hacker_route()
 
+public void transition_game(JButton next_game) {
+    next_game.addActionListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+            String html = "<html>Your new task: "
+                    + "Perform SQL injection on database. <br><br>"
+                    + "** click \"CONTINUE\" to proceed. **<br></html>";
 
+            scene_.setText(html);
+            choices_.setText(null);
 
+            panel_choices.remove(next_alt);
+            panel_choices.remove(next_game);
 
+            panel_answer.remove(answer);
+            panel_answer.remove(submit_b2);
 
+        }
+    });
+}
 
+public void transition_game_ethical(JButton next_game) {
+    next_game.addActionListener(new ActionListener() {
+        public void actionPerformed(final ActionEvent e) {
+            String html = "<html>Your client wants you to perform two tasks: <br>"
+                    + "1. Perform an SQL Injection on the database to find vulnerabilities.<br>"
+                    + "2. Your client mentioned that some employees practice poor security <br>"
+                    + "protocols when coming to their own personal items. Perform a <br>"
+                    + "password crack to educate them on strong passwords. <br><br></html>";
 
-    public static void main(String[] args) {
+            scene_.setText(html);
+            choices_.setText(null);
+
+            panel_choices.remove(next_alt);
+            panel_choices.remove(next_game);
+
+            panel_answer.remove(answer);
+            panel_answer.remove(submit_b2);
+
+        }
+    });
+}
+
+public static void main(String[] args) {
 
         /* instead of calling these two here, call them in CyberAdventure */
         // info();
