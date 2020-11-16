@@ -59,16 +59,30 @@ public class GUIproperties extends JFrame {
         label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
 
         return label;
-    } // end greeting_label()
+    } // end standard_label()
+
+    public JLabel task_label(String str) { // standard font sizing and position for all labels
+        JLabel label = new JLabel();
+        label.setFont(new Font("Arial", Font.ITALIC, 17));
+        label.setAlignmentX(JLabel.CENTER_ALIGNMENT);
+
+        return label;
+    } // end task_label()
 
     public JButton help_button(JPanel panel, String b_label) {
-        JButton button = new JButton(b_label);
+        JButton button = new JButton("NOT YET !!");
         button.setFont(new Font("Arial", Font.BOLD, 17));
         button.setPreferredSize(new Dimension(200, 60));
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         return button;
     } // end intro_button()
+
+    // public JButton main_button() {
+    //     JButton button = new JButton();
+    //     button.setPreferredSize(new Dimension(30, 10));
+    //     return button;
+    // } // end intro_button()
 
     public JButton continue_button(JPanel panel) {
         JButton button = new JButton("CONTINUE");

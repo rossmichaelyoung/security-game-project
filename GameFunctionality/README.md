@@ -28,9 +28,9 @@ GameEffects.java
 
 To compile:
 ```
-javac -cp ".:../Resources/postgresql-42.2.18.jar" SecurityGame.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java
+javac -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java BruteForcePasswordCracker.java
 ```
 To run:
 ```
-java -cp ".:../Resources/postgresql-42.2.18.jar" SecurityGame
+java -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure
 ```

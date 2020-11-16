@@ -21,6 +21,7 @@ class CyberAdventure extends JPanel {
     }
 
     public static Game currentGame;
+    public static JFrame helpFrame;
     public static JPanel panel_game;
     public static JPanel resultsPanel;
     public static JButton mainButton;
@@ -30,13 +31,6 @@ class CyberAdventure extends JPanel {
     public static JComboBox<String> characterSpaceOptions;
     public static JComboBox<String> timeOptions;
 
-    public static void exit_game(JFrame frame, JButton exit_button) {
-        exit_button.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-            } // end void actionPerformed()
-        }); // end actionListener()
-    }   // end exit_game()
 
     public static void show_hide_help(JFrame frame, JButton help_button, JLabel label) {
         help_button.addActionListener(new ActionListener() {
@@ -77,19 +71,20 @@ class CyberAdventure extends JPanel {
         resultsPanel = new JPanel();
         resultsTextArea = new JTextArea();
         JScrollPane resultsPane = new JScrollPane(resultsTextArea);
-        resultsPane.setPreferredSize(new Dimension(680, 300));
+        resultsPane.setPreferredSize(new Dimension(680, 240));
         resultsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         /* ***** RESULTS PANEL PROPERTIES ***** */
         resultsPanel.setVisible(true);
         resultsPanel.add(resultsPane);
+        resultsPanel.add(Box.createRigidArea(new Dimension(95, 0)));
     }
 
     public static void setupInteractiveGames() {
         setResultsPanel();
 
         /* ***** HELP COMPONENTS ***** */
-        JFrame helpFrame = new JFrame();
+        helpFrame = new JFrame();
         helpFrame.setTitle("Help");
         helpTextArea = new JTextArea();
         JScrollPane helpPane = new JScrollPane(helpTextArea);
@@ -117,13 +112,16 @@ class CyberAdventure extends JPanel {
         searchTextArea.setWrapStyleWord(true);
 
         JScrollPane searchPane = new JScrollPane(searchTextArea);
-        searchPane.setPreferredSize(new Dimension(700, 55));
+        searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        searchPane.setPreferredSize(new Dimension(680, 50));
         searchPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         searchPanel.setVisible(true);
         searchPanel.add(searchPane);
+        searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
         mainButton = new JButton("Search");
+        mainButton.setPreferredSize(new Dimension(138, 20));
         mainButton.addActionListener(e -> {
             String search = searchTextArea.getText();
             searchTextArea.setText("");
@@ -143,10 +141,9 @@ class CyberAdventure extends JPanel {
                         if (sqlInjection.getProgress().equals(SQLInjection.Progress.DatabaseType) && result.contains("PostgreSQL 12.4")) {
                             sqlInjection.setProgress(SQLInjection.Progress.TableNames);
 
-                            String helpAndHints = "Now that you know its a PostgreSQL database, you now want to find the names of the tables in this database \n" +
-                                    "Use the SELECT statement to return the column table_name FROM the table information_schema.tables \n" +
-                                    "\n" +
-                                    "Remember to start your SQL command with a single quote (') and a UNION statement and to end your SQL statement with a comment command, which is -- \n";
+                            String helpAndHints = "<html>Now that you know its a PostgreSQL database, you now want to find the names of the tables in this database <br>" +
+                                    "Use the SELECT statement to return the column table_name FROM the table information_schema.tables <br><br>" +
+                                    "Remember to start your SQL command with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
                         } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.TableNames) && result.contains("pg_publication_tables")) {
                             sqlInjection.setProgress(SQLInjection.Progress.PublicTableNames);
@@ -202,6 +199,8 @@ class CyberAdventure extends JPanel {
                 case StrongPasswords:
                     resultsTextArea.setText("");
                     String passwordHash;
+                    mainButton.setPreferredSize(new Dimension(175, 5));
+
                     if(mainButton.getText().equals("Brute Force Attack")) {
                         String selectedCharacterSpace = String.valueOf(characterSpaceOptions.getSelectedItem());
                         if (bruteForcePasswordCracker.checkCharacterSpace(search, selectedCharacterSpace)) {
@@ -257,6 +256,10 @@ class CyberAdventure extends JPanel {
     }
     
     public static void main(String[] args) {
+
+        GUIproperties gui = new GUIproperties();
+        PhysicalAspects phys = new PhysicalAspects();
+
         physicalAspects = new PhysicalAspects();
         sqlInjection = new SQLInjection();
         dictionaryAttackPasswordCracker = new DictionaryAttackPasswordCracker();
@@ -274,21 +277,20 @@ class CyberAdventure extends JPanel {
 
         // Start Game
 //        SwingUtilities.invokeLater(SecurityGame::showFrame);
-        GUIproperties gui = new GUIproperties();
 
         /* ***** PLAYER STATUS COMPONENTS ***** */
-        JFrame status_frame = new JFrame();
-        status_frame.setTitle("Player Status");
+        // JFrame status_frame = new JFrame();
+        // status_frame.setTitle("Player Status");
 
-        JPanel status_bckgrnd = new JPanel();
-        status_bckgrnd.setBackground(Color.WHITE);
+        // JPanel status_bckgrnd = new JPanel();
+        // status_bckgrnd.setBackground(Color.WHITE);
 
-        /* ***** ANSWER OPTIONS COMPONENTS ***** */
-        JFrame options_frame = new JFrame();
-        options_frame.setTitle("Make a Decision");
+        // /* ***** ANSWER OPTIONS COMPONENTS ***** */
+        // JFrame options_frame = new JFrame();
+        // options_frame.setTitle("Make a Decision");
 
-        JPanel options_bckgrnd = new JPanel();
-        options_bckgrnd.setBackground(Color.WHITE);
+        // JPanel options_bckgrnd = new JPanel();
+        // options_bckgrnd.setBackground(Color.WHITE);
 
         /* ***** GAME CONTENT FRAME COMPONENTS ***** */
         /* layers: frame -> panel_bckgrnd -> panel_game + panel_buttons */
@@ -298,7 +300,14 @@ class CyberAdventure extends JPanel {
         JPanel panel_bckgrnd = new JPanel();
 
         panel_game = new JPanel();
-        panel_game.setBackground(Color.GRAY);
+        // panel_game.setBackground(Color.GRAY);
+
+        /* ***** PHYSICAL ASPECTS GAME COMPONENTS ***** */
+        // JFrame physaspects_frame = new JFrame(); // actual frame
+        // JPanel panel_physaspects = new JPanel(); // add panel to create layout
+        JPanel panel_question = new JPanel(); // where question displayed
+        JPanel panel_answer = new JPanel(); // where text and submit is displayed
+        JPanel panel_choices = new JPanel(); // where choices are displayed
 
         /* call function to ask user's name */
         String name = gui.ask_name();
@@ -306,11 +315,25 @@ class CyberAdventure extends JPanel {
 
         /* add panel to add button */
         JPanel panel_buttons = new JPanel();
-        panel_buttons.setBackground(Color.DARK_GRAY);
+        panel_buttons.setBackground(Color.GRAY);
         String b_label = "HIDE HELP";
         JButton help_button = gui.help_button(panel_buttons, b_label);
+        // JButton imposter = gui.continue_button(panel_buttons);
         JButton continue_button = gui.continue_button(panel_buttons);
+
+        
+
+        // JButton continue_button = new JButton();
         continue_button.addActionListener(e -> {
+            help_button.setText("HIDE HELP");
+
+            JLabel scene = phys.scene_;
+            scene.setText(null);
+
+            panel_bckgrnd.remove(panel_question);
+            panel_bckgrnd.remove(panel_answer);
+            panel_bckgrnd.remove(panel_choices);
+
             switch(currentGame) {
                 case SQL:
                     if (sqlInjection.getProgress().equals(SQLInjection.Progress.Done)) {
@@ -340,6 +363,7 @@ class CyberAdventure extends JPanel {
                     panel_game.add(characterSpacePanel);
 
                     JPanel timeoutPanel = new JPanel();
+                    timeoutPanel.add(Box.createRigidArea(new Dimension(180, 0)));
                     JLabel timeoutLabel = new JLabel("Select Length of Time in Seconds to Crack Password:");
                     timeoutPanel.add(timeoutLabel);
                     String[] timeChoices = {"30","45","60","90","120","180"};
@@ -347,25 +371,32 @@ class CyberAdventure extends JPanel {
                     timeOptions.setVisible(true);
                     timeoutPanel.add(timeOptions);
                     panel_game.add(timeoutPanel);
-
                     panel_game.add(resultsPanel);
 
                     JPanel togglePanel = new JPanel();
                     JButton toggle = new JButton("Switch to Dictionary Attack");
+
+                    mainButton.setPreferredSize(new Dimension(145, 20));
+
                     toggle.addActionListener(event -> {
                         if(mainButton.getText().equals("Brute Force Attack")) {
+                            mainButton.setPreferredSize(new Dimension(145, 20));
                             mainButton.setText("Dictionary Attack");
                             toggle.setText("Switch to Brute Force Attack");
                             characterSpacePanel.setVisible(false);
                             timeoutPanel.setVisible(false);
                         } else {
+                            mainButton.setPreferredSize(new Dimension(145, 20));
                             mainButton.setText("Brute Force Attack");
                             toggle.setText("Switch to Dictionary Attack");
                             characterSpacePanel.setVisible(true);
                             timeoutPanel.setVisible(true);
                         }
                     });
+                    togglePanel.add(Box.createRigidArea(new Dimension(440, 0)));
                     togglePanel.add(toggle);
+                    togglePanel.add(Box.createRigidArea(new Dimension(50, 0)));
+
                     panel_game.add(togglePanel);
 
                     break;
@@ -396,10 +427,41 @@ class CyberAdventure extends JPanel {
         frame.setTitle("Cyber Adventure - Currently Playing: " + name);
         // physical.info();
         /* show message to tell user what to do */
-        String click_to_cont = "Click \"CONTINUE\" to continue >>> ";
-        JLabel proceed = gui.standard_label(click_to_cont);
-        proceed.setText(click_to_cont);
+        String html = "<html>** Occupation: ethical hacker <br><br>"
+                + "Your Task: You are hired by a private company that specializes in selling rare antiques to high-end customers. <br>"
+                + "Recently, there has been a rise in crime targeting websites selling high-end products, and the company is <br>"
+                + "worried that they might be a target. So, they decided to hire you to test the security of their site. ** <br><br> </html>";
+
+        JLabel proceed = gui.task_label(html);
+        proceed.setText(html);
+        panel_buttons.add(proceed);
         panel_game.add(proceed);
+
+        /* physical aspects section */
+        JButton next_game = new JButton("NEXT >>>");
+        JButton next_alt = new JButton("NEXT >>>"); // when switching roles, to sql
+        JButton next_alt2 = new JButton("NEXT >>>"); // when switching roles, to password
+
+        phys.info();
+        phys.intro_lesson();
+        phys.interface_layout(frame, panel_game, panel_bckgrnd, panel_question, panel_answer, panel_choices);
+        JTextField answer = phys.answer_input();
+        JButton submit_b = phys.submit();
+
+        phys.add_panels(panel_game, answer, submit_b);
+        /* QUESTION 1 */
+        phys.scene_one(answer, submit_b, panel_game, proceed);
+        /* QUESTION 2 */
+        JButton submit_b2 = phys.submit();
+        phys.scene_two(answer, submit_b2, next_alt, next_alt2);
+        /* QUESTION 2 ALTERNATIVE ROUTE -- GO TO SQL ATTACK */
+        phys.transition_game(next_game);
+        phys.scene_two_alt(answer, submit_b2, next_alt, next_game);
+        /* QUESTION 2 ALTERNATIVE ROUTE -- GO TO SQL ATTACK, DIFFERENT TEXT DISPLAYED */
+        phys.scene_two_alt2(answer, submit_b2, next_alt2, next_game);
+        /* QUESTION 3 */
+        phys.ethical_hacker_route(answer, continue_button);
+        /* physical aspects section */
 
         /* ***** DISPLAY PANEL WHERE GAME CONTENT WILL BE PLACED ***** */
         panel_bckgrnd.add(panel_game);
@@ -419,31 +481,6 @@ class CyberAdventure extends JPanel {
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        /* ***** PLAYER STATUS FRAME PROPERTIES ***** */
-        LayoutManager status_layout = new BoxLayout(status_bckgrnd, BoxLayout.X_AXIS);
-        status_bckgrnd.setLayout(status_layout);
-
-        JLabel question_label = gui.question_label(status_bckgrnd);
-        status_bckgrnd.setBorder(new EmptyBorder(10, 10, 10, 10)); // spacing between border and text
-        status_bckgrnd.add(question_label);
-
-        status_frame.add(status_bckgrnd);
-
-        status_frame.setSize(400, 500);
-        final Color LIGHT_BLUE = new Color(51, 153, 255);
-        status_frame.getContentPane().setBackground(LIGHT_BLUE);
-        status_frame.setVisible(false);
-        status_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
-        /* ***** ANSWER OPTIONS FRAME PROPERTIES ***** */
-        options_frame.add(options_bckgrnd);
-
-        options_frame.setSize(400, 500);
-        final Color VERY_LIGHT_BLUE = new Color(51, 204, 255);
-        options_frame.getContentPane().setBackground(VERY_LIGHT_BLUE);
-        options_frame.setVisible(false);
-        options_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-
         /* ***** ACTIONLISTENER FOR CONTINUE AND EXIT BUTTONS ***** */
         help_button.addActionListener(new ActionListener() {
             boolean hasBeenClicked = false;
@@ -451,33 +488,26 @@ class CyberAdventure extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!hasBeenClicked) {
-                    proceed.setText(null);
+                    // proceed.setText(null);
 
                     String b_label = "HIDE HELP";
                     help_button.setText(b_label);
 
-                    status_frame.setVisible(true);
-                    options_frame.setVisible(true);
+                    helpFrame.setVisible(true);
 
-                    status_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                    options_frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 } else if (hasBeenClicked) {
                     String b_label = "SHOW HELP";
                     help_button.setText(b_label);
-                    status_frame.dispose();
-                    options_frame.dispose();
-                    status_frame.setVisible(false);
-                    options_frame.setVisible(false);
+                    helpFrame.dispose();
+                    helpFrame.setVisible(false);
                 }
                 hasBeenClicked = !hasBeenClicked;
-
             } // end void actionPerformed()
         }); // end actionListener()
 
         exit_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                status_frame.dispose();
-                options_frame.dispose();
+                helpFrame.dispose();
                 frame.dispose();
             } // end void actionPerformed()
         }); // end actionListener()
