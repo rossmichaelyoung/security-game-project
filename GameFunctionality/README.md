@@ -2,10 +2,28 @@
   
 ### CyberAdventure.java  
 
- includes main and GUI declarations for panels, frames, etc.  
+includes main and GUI declarations for panels, frames, etc.  
 GameEffects.java  
   
- includes all GUI properties like panel sizing, button designs, fonts,   etc.  
+includes all GUI properties like panel sizing, button designs, fonts, etc. 
+
+To compile on Mac:
+```
+javac -cp ".:../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java PhysicalAspects.java
+```
+To run on Mac:
+```
+java -cp ".:../Resources/postgresql-42.2.18.jar" CyberAdventure
+```
+
+To compile on Windows:
+```
+javac -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java PhysicalAspects.java
+```
+To run on Windows:
+```
+java -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure
+```
   
 ### GameEffects.java  
   
@@ -23,14 +41,3 @@ GameEffects.java
  ``` 
  ' UNION SELECT username || ' ' || password FROM users-- 
  ```
-
-### SecurityGame.java
-
-To compile:
-```
-javac -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java BruteForcePasswordCracker.java
-```
-To run:
-```
-java -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure
-```

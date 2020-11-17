@@ -89,7 +89,14 @@ public class GUIproperties extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 17));
         button.setPreferredSize(new Dimension(200, 60));
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        return button;
+    } // end intro_button()
 
+    public JButton answer_button(JPanel panel) {
+        JButton button = new JButton("SHOW ANSWER");
+        button.setFont(new Font("Arial", Font.BOLD, 17));
+        button.setPreferredSize(new Dimension(350, 60));
+        panel.setLayout(new FlowLayout(FlowLayout.LEFT));
         return button;
     } // end intro_button()
 

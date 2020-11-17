@@ -13,6 +13,7 @@ public class BruteForcePasswordCracker {
     public static final String LOWER_AND_UPPER_CASE_LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
     public static final String LOWER_CASE_LETTERS_AND_DIGITS = "abcdefghijklmnopqrstuvwxyz0123456789";
     public static final String LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    public static final String LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS_AND_SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*+=<>?:;/`~|,._(){}\"'";
 
     public static boolean found = false;
     public static long start;
@@ -79,7 +80,7 @@ public class BruteForcePasswordCracker {
                 BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
                 output.append("The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n" +
                         "Password cracked in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n" +
-                        "Using character space " + cs);
+                        "Using character set " + cs);
                 return;
             }
         }
@@ -104,19 +105,19 @@ public class BruteForcePasswordCracker {
             result.append("Error Finding Password");
         }
 
-        return result.length() > 0 ? result.toString() : "Could not crack password with character space " + characterSpace;
+        return result.length() > 0 ? result.toString() : "Could not crack password with character set " + characterSpace;
     }
 
     public static String getCharacterSpace(String selectedCharacterSpace) {
         switch(selectedCharacterSpace) {
-            case "Lowercase Characters Only":
+            case "Lowercase Letters Only":
                 return LOWER_CASE_LETTERS;
-            case "Lowercase and Uppercase Characters":
+            case "Lowercase and Uppercase Letters":
                 return LOWER_AND_UPPER_CASE_LETTERS;
-            case "Lowercase Characters and Numbers":
+            case "Lowercase Letters and Numbers":
                 return LOWER_CASE_LETTERS_AND_DIGITS;
             default:
-                return LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS;
+                return LOWER_AND_UPPER_CASE_LETTERS_AND_DIGITS_AND_SYMBOLS;
         }
     }
 
@@ -131,14 +132,16 @@ public class BruteForcePasswordCracker {
     public static boolean checkCharacterSpace(String password, String cs) {
         int length = password.length();
         switch (cs) {
-            case "Lowercase Characters Only":
+            case "Lowercase Letters Only":
                 return password.matches("^[a-z]{" + length + "}$");
-            case "Lowercase and Uppercase Characters":
+            case "Lowercase and Uppercase Letters":
                 return password.matches("^[a-zA-Z]{" + length + "}$");
-            case "Lowercase Characters and Numbers":
+            case "Lowercase Letters and Numbers":
                 return password.matches("^[a-z0-9]{" + length + "}$");
-            case "Lowercase and Uppercase Characters and Numbers":
+            case "Lowercase and Uppercase Letters and Numbers":
                 return password.matches("^[a-zA-Z0-9]{" + length + "}$");
+            case "Lowercase and Uppercase Letters, Numbers, and Special Characters":
+                return password.matches("^[a-zA-Z0-9!@#$%^&*+=<>?:;/`~|,._(){}\"']{" + length + "}$");
         }
 
         return true;
@@ -159,7 +162,7 @@ public class BruteForcePasswordCracker {
                     "Please Input (in this order): \n" +
                             "1. Your Password \n" +
                             "2. The Hashing Algorithm You Wish To Use (MD5, SHA-1, SHA-256, etc) \n" +
-                            "3. The Character Space of Your Password: \n" +
+                            "3. The Character Set of Your Password: \n" +
                             "   l   (Lower Case Letters) \n" +
                             "   lu  (Lower and Upper Case Letters) \n" +
                             "   ld  (Lower Case Letters and Digits) \n" +

@@ -10,7 +10,7 @@ public class SQLInjection {
     public static ArrayList<String> sqlTerms;
     public static Connection conn;
     public enum Progress {
-        DatabaseType, TableNames, PublicTableNames, ColumnNames, UsernamesAndPasswords, Done
+        DatabaseType, PublicTableNames, ColumnNames, UsernamesAndPasswords, Done
     }
     public static Progress progress;
 
