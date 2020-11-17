@@ -11,7 +11,7 @@ import java.sql.*;
 
 class CyberAdventure extends JPanel {
 
-    public static PhysicalAspects physicalAspects;
+    public static PhysicalAspects phys;
     public static SQLInjection sqlInjection;
     public static DictionaryAttackPasswordCracker dictionaryAttackPasswordCracker;
     public static BruteForcePasswordCracker bruteForcePasswordCracker;
@@ -424,7 +424,7 @@ class CyberAdventure extends JPanel {
         JScrollPane explanationPane = new JScrollPane(explanationTextArea);
         explanationPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        explanationFrame.setSize(new Dimension(1000, 350));
+        explanationFrame.setSize(new Dimension(1000, 400));
         explanationFrame.setVisible(true);
         explanationFrame.getContentPane().add(explanationPane);
 
@@ -443,6 +443,7 @@ class CyberAdventure extends JPanel {
         } else if (currentGame == Game.Password) {
             explanationFrame.setTitle("Password Cracker");
             explanation = "<html>" +
+                    "<b>You are now to crack the passwords you just retrieved from your SQL injection</b> <br/>" +
                     "Copy and Paste the seemingly random 32 character strings into the box at the top and click 'Crack Password'. <br/>" +
                     "In the background, a password cracker is working to find out what password this seemingly random string corresponds to. <br/>" +
                     "This random string is a hash, which is what websites store in their database instead of an actual password. <br/><br/>" +
@@ -474,7 +475,7 @@ class CyberAdventure extends JPanel {
     }
 
     public static void main(String[] args) {
-        physicalAspects = new PhysicalAspects();
+        phys = new PhysicalAspects();
         sqlInjection = new SQLInjection();
         dictionaryAttackPasswordCracker = new DictionaryAttackPasswordCracker();
         bruteForcePasswordCracker = new BruteForcePasswordCracker();
@@ -524,7 +525,7 @@ class CyberAdventure extends JPanel {
         continue_button.addActionListener(e -> {
             help_button.setText("HIDE HELP");
 
-            JLabel scene = physicalAspects.scene_;
+            JLabel scene = phys.scene_;
             scene.setText(null);
 
             panel_bckgrnd.remove(panel_question);
@@ -599,9 +600,13 @@ class CyberAdventure extends JPanel {
                             "Try out various passwords with the dictionary attack, including passwords the brute force attack could not crack within the time constraints <br/>" +
                             "You might notice some long passwords with a variety of characters could be cracked quickly <br/>" +
                             "A long password with a variety of characters does not necessarily make it strong. A strong password also needs to be unique <br/>" +
-                            "Avoid using common words, phrases, and character combinations, as a dictionary attack can easily break these passwords, even though they may appear strong <br/>" +
+                            "Avoid using common words, phrases, and character combinations, as a dictionary attack can easily break these passwords, even though they may appear strong <br/><br/>" +
+                            "This is the last activity in the CyberAdventure Game <br/>" +
+                            "<b>Please press 'Exit' when you are done with this activity</b>" +
                             "</html>";
                     helpTextArea.setText(help);
+
+                    continue_button.setVisible(false);
                     break;
                 case StrongPasswords:
                     break;
