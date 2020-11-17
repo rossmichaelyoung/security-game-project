@@ -486,6 +486,11 @@ public void ethical_hacker_route(JTextField answer, JButton continue_button, JBu
             String html = "<html>Looks like you know how important it is to be aware of your environment ! <br><br>"
                     + "Remember, not everyone has good intentions. It's better to be safe than sorry when <br>"
                     + "protecting your workspace, especially in a public area. <br<br>"
+                    + "Your client wants you to perform two tasks: <br>"
+                    + "1. Perform an SQL Injection on the database to find vulnerabilities.<br>"
+                    + "2. Your client mentioned that some employees practice poor security <br>"
+                    + "protocols when coming to their own personal items. Perform a <br>"
+                    + "password crack to educate them on strong passwords. <br>"
                     + "Click \"CONTINUE\" to proceed. <br><br></html>";
 
             scene_.setText(html);
@@ -524,7 +529,7 @@ public void transition_game(JButton next_game, JButton help_button, JButton cont
     });
 }
 
-public void transition_game_ethical(JButton next_game) {
+public void transition_game_ethical(JButton next_alt, JButton next_game) {
     next_game.addActionListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
             String html = "<html>Your client wants you to perform two tasks: <br>"
