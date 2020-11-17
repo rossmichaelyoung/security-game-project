@@ -522,24 +522,13 @@ class CyberAdventure extends JPanel {
         panel_buttons.setBackground(Color.GRAY);
         panel_buttons = new JPanel();
         panel_buttons.setBackground(Color.DARK_GRAY);
-        String b_label = "HIDE HELP";
-        JButton help_button = gui.help_button(panel_buttons, b_label);
+
+        JButton help_button = gui.help_button(panel_buttons);
         continue_button = gui.continue_button(panel_buttons);
-        continue_button.setVisible(false);
 
         continue_button.addActionListener(e -> {
-            help_button.setText("HIDE HELP");
-
-            JLabel scene = phys.scene_;
-            scene.setText(null);
-
-            panel_bckgrnd.remove(panel_question);
-            panel_bckgrnd.remove(panel_answer);
-            panel_bckgrnd.remove(panel_choices);
-
             switch(currentGame) {
                 case SQL:
-
                     if (sqlInjection.getProgress().equals(SQLInjection.Progress.Done)) {
                         setCurrentGame(Game.Password);
                         mainButton.setText("Crack Password");
@@ -626,6 +615,14 @@ class CyberAdventure extends JPanel {
                     panel_bckgrnd.remove(panel_question);
                     panel_bckgrnd.remove(panel_answer);
                     panel_bckgrnd.remove(panel_choices);
+                    help_button.setVisible(true);
+
+                    JLabel scene = phys.scene_;
+                    scene.setText(null);
+
+                    panel_bckgrnd.remove(panel_question);
+                    panel_bckgrnd.remove(panel_answer);
+                    panel_bckgrnd.remove(panel_choices);
                     break;
                 case End:
                     break;
@@ -661,7 +658,7 @@ class CyberAdventure extends JPanel {
         /* physical aspects section */
         JButton next_game = new JButton("NEXT >>>");
         JButton next_alt = new JButton("NEXT >>>"); // when switching roles, to sql
-        JButton next_alt2 = new JButton("NEXT >>>"); // when switching roles, to password
+        JButton next_alt2 = new JButton("NEXT >>>");
 
         phys.info();
         phys.intro_lesson();
@@ -669,21 +666,20 @@ class CyberAdventure extends JPanel {
         JTextField answer = phys.answer_input();
         JButton submit_b = phys.submit();
 
-        phys.add_panels(panel_game, answer, submit_b, help_button, continue_button);
+        phys.add_panels(panel_game, answer, submit_b);
         /* QUESTION 1 */
-        phys.scene_one(answer, submit_b, panel_game, proceed, help_button, continue_button);
+        phys.scene_one(answer, submit_b, panel_game, proceed);
         /* QUESTION 2 */
         JButton submit_b2 = phys.submit();
-        phys.scene_two(answer, submit_b2, next_alt, next_alt2, help_button, continue_button);
+        phys.scene_two(answer, submit_b2, next_alt, next_alt2);
         /* QUESTION 2 ALTERNATIVE ROUTE -- GO TO SQL ATTACK */
-        phys.transition_game(next_game, help_button, continue_button);
-        phys.scene_two_alt(answer, submit_b2, next_alt, next_game, help_button, continue_button);
+        phys.transition_game(next_game, continue_button);
+        phys.scene_two_alt(answer, submit_b2, next_alt, next_game, continue_button);
         /* QUESTION 2 ALTERNATIVE ROUTE -- GO TO SQL ATTACK, DIFFERENT TEXT DISPLAYED */
-        phys.scene_two_alt2(answer, submit_b2, next_alt2, next_game, help_button, continue_button);
+        phys.scene_two_alt2(answer, submit_b2, next_alt2, next_game, continue_button);
         /* QUESTION 3 */
-        phys.ethical_hacker_route(answer, help_button, continue_button);
+        phys.ethical_hacker_route(answer, continue_button);
         /* physical aspects section */
-        continue_button.setVisible(true);
 
         /* ***** DISPLAY PANEL WHERE GAME CONTENT WILL BE PLACED ***** */
         panel_bckgrnd.add(panel_game);
@@ -729,8 +725,8 @@ class CyberAdventure extends JPanel {
 
         exit_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                helpFrame.dispose();
                 frame.dispose();
+                helpFrame.dispose();
             } // end void actionPerformed()
         }); // end actionListener()
 

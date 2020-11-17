@@ -69,10 +69,11 @@ public class GUIproperties extends JFrame {
         return label;
     } // end task_label()
 
-    public JButton help_button(JPanel panel, String b_label) {
-        JButton button = new JButton("NOT YET !!");
+    public JButton help_button(JPanel panel) {
+        JButton button = new JButton("SHOW HELP");
         button.setFont(new Font("Arial", Font.BOLD, 17));
         button.setPreferredSize(new Dimension(200, 60));
+        button.setVisible(false);
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
 
         return button;
@@ -89,6 +90,7 @@ public class GUIproperties extends JFrame {
         button.setFont(new Font("Arial", Font.BOLD, 17));
         button.setPreferredSize(new Dimension(200, 60));
         panel.setLayout(new FlowLayout(FlowLayout.LEFT));
+        button.setVisible(false);
         return button;
     } // end intro_button()
 
