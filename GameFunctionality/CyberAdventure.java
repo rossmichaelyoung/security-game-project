@@ -60,13 +60,13 @@ class CyberAdventure extends JPanel {
         resultsTextArea = new JTextArea();
         resultsTextArea.setEditable(false);
         resultsPane = new JScrollPane(resultsTextArea);
-        resultsPane.setPreferredSize(new Dimension(820, 200));
+        resultsPane.setPreferredSize(new Dimension(680, 200));
         resultsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         /* ***** RESULTS PANEL PROPERTIES ***** */
         resultsPanel.setVisible(true);
+        resultsPanel.add(Box.createRigidArea(new Dimension(43, 0)));
         resultsPanel.add(resultsPane);
-        resultsPanel.add(Box.createRigidArea(new Dimension(95, 0)));
     }
 
     public static void setUpUtilityPanel() {
@@ -75,12 +75,15 @@ class CyberAdventure extends JPanel {
         utilityTextArea = new JTextArea();
         utilityTextArea.setEditable(false);
         JScrollPane utilityPane = new JScrollPane(utilityTextArea);
-        utilityPane.setPreferredSize(new Dimension(820, 100));
+        utilityPanel.add(Box.createRigidArea(new Dimension(46, 0)));
+
+        utilityPane.setPreferredSize(new Dimension(680, 100));
         utilityPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
         /* ***** UTILITY PANEL PROPERTIES ***** */
         utilityPanel.setVisible(true);
         utilityPanel.add(utilityPane);
+
     }
 
     public static void createAnswerButton() {
@@ -270,6 +273,8 @@ class CyberAdventure extends JPanel {
 
         searchLabel = new JLabel("Search for an item in inventory:");
         searchPanel.add(searchLabel);
+//        searchPanel.add(Box.createRigidArea(new Dimension(400,0)));
+
         searchPanel.add(searchPane);
         searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
@@ -307,7 +312,7 @@ class CyberAdventure extends JPanel {
 
                             setAnswerButtonForNextStep();
 
-                            String helpAndHints = "<html>You now see there are two public tables – inventory and users. <br/>\n" +
+                            String helpAndHints = "<html>You now see there are two public tables: inventory and users. <br/>\n" +
                                     "The users tables likely holds interesting information we want to extract. <br/>\n" +
                                     "Try to find the names of the columns in the users table. <br/><br/>\n" +
                                     "Hint: use a SELECT statement to return the column column_name FROM information_schema.columns <br/>\n" +
@@ -534,6 +539,7 @@ class CyberAdventure extends JPanel {
 
             switch(currentGame) {
                 case SQL:
+
                     if (sqlInjection.getProgress().equals(SQLInjection.Progress.Done)) {
                         setCurrentGame(Game.Password);
                         mainButton.setText("Crack Password");
@@ -616,6 +622,10 @@ class CyberAdventure extends JPanel {
                     setupInteractiveGames();
                     displayExplanation();
                     sqlBasicsButton.setVisible(true);
+
+                    panel_bckgrnd.remove(panel_question);
+                    panel_bckgrnd.remove(panel_answer);
+                    panel_bckgrnd.remove(panel_choices);
                     break;
                 case End:
                     break;
