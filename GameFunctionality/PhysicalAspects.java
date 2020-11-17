@@ -13,7 +13,7 @@ public class PhysicalAspects {
     public static JPanel panel_answer = new JPanel();       // where text and submit is displayed
     public static JPanel panel_choices = new JPanel();      // where choices are displayed
 
-//  public JLabel intro = info();
+//    public JLabel intro = info();
     public JButton next = new JButton("NEXT >>>");
 
     public static JButton next_game = new JButton("NEXT >>>");
@@ -26,7 +26,7 @@ public class PhysicalAspects {
 
 
     /* ***** SET UP ***** */
-    public void interface_layout(JFrame frame, JPanel panel_bckgrnd, JPanel p1, JPanel p2, JPanel p3, JPanel p4) {
+    public void interface_layout(JFrame frame, JPanel panel_bckgrnd, JPanel panel_buttons, JPanel p1, JPanel p2, JPanel p3, JPanel p4) {
 //        frame = new JFrame();
 //        frame.setTitle("Physical Aspects of Cybersecurity");
         p1 = new JPanel();
@@ -160,9 +160,11 @@ public class PhysicalAspects {
     public JLabel scene_ = scene();
     public JLabel choices_ = scene_choices();
 
-    public void add_panels(JPanel panel_physaspects, JTextField answer, JButton submit_b) {
+    public void add_panels(JPanel panel_physaspects, JTextField answer, JButton submit_b, JButton help_button, JButton continue_button) {
         // answer = answer_input();
         // submit_b = submit();
+        help_button.setVisible(false);
+        continue_button.setVisible(false);
 
         panel_answer.add(answer);
         panel_answer.add(submit_b);
@@ -181,8 +183,10 @@ public class PhysicalAspects {
     public JTextField answer = answer_input();
     public JButton submit_b = submit();
 
-    public void scene_one(JTextField answer, JButton submit_b, JPanel panel, JLabel proceed) {
-
+    public void scene_one(JTextField answer, JButton submit_b, JPanel panel, JLabel proceed, JButton help_button, JButton continue_button) {
+        help_button.setVisible(false);
+        continue_button.setVisible(false);
+                
         submit_b.addActionListener(new ActionListener() {
             boolean hasBeenClicked = false;
 
@@ -290,7 +294,10 @@ public class PhysicalAspects {
     /* SCENE TWO */
     public JButton submit_b2 = submit();
 
-    public void scene_two(JTextField answer, JButton submit_b2, JButton next_alt, JButton next_alt2) {
+    public void scene_two(JTextField answer, JButton submit_b2, JButton next_alt, JButton next_alt2, JButton help_button, JButton continue_button) {
+        help_button.setVisible(false);
+        continue_button.setVisible(false);
+
         next.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String html = "<html>You are about to begin your tasks, but the client suddenly asks for you. <br>"
@@ -418,7 +425,10 @@ public class PhysicalAspects {
     /* END SCENE TWO */
 
     /* SCENE TWO--ALTERNATIVE ROUTE #1 */
-    public void scene_two_alt(JTextField answer, JButton submit_b2, JButton next_alt, JButton go_to_sql) {    // link button to continue -> go_to_Sql
+    public void scene_two_alt(JTextField answer, JButton submit_b2, JButton next_alt, JButton go_to_sql, JButton help_button, JButton continue_button) {    // link button to continue -> go_to_Sql
+        help_button.setVisible(false);
+        continue_button.setVisible(false);
+        
         next_alt.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String html = "<html><body width='%1s'><h1>** Role Switch ! **</h1>"
@@ -442,7 +452,10 @@ public class PhysicalAspects {
      /* END SCENE TWO--ALTERNATIVE ROUTE #1 */   
 
      /* SCENE TWO--ALTERNATIVE ROUTE #2 */   
-    public void scene_two_alt2(JTextField answer, JButton submit_b2, JButton next_alt2, JButton go_to_sql) {   // link button to continue -> go_to_Sql
+    public void scene_two_alt2(JTextField answer, JButton submit_b2, JButton next_alt2, JButton go_to_sql, JButton help_button, JButton continue_button) {   // link button to continue -> go_to_Sql
+        help_button.setVisible(false);
+        continue_button.setVisible(false);
+        
         next_alt2.addActionListener(new ActionListener() {
             public void actionPerformed(final ActionEvent e) {
                 String html = "<html><body width='%1s'><h1>** Role Switch ! **</h1>" + "Occupation: the attacker <br> "
@@ -467,7 +480,7 @@ public class PhysicalAspects {
     }   // end scene_two_alt2()
 /* END SCENE TWO--ALTERNATIVE ROUTE #2 */   
 
-public void ethical_hacker_route(JTextField answer, JButton cont) {  // link button to continue -> go_to_Sql
+public void ethical_hacker_route(JTextField answer, JButton continue_button, JButton help_button) {  // link button to continue -> go_to_Sql
     next_game.addActionListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
             String html = "<html>Looks like you know how important it is to be aware of your environment ! <br><br>"
@@ -482,11 +495,14 @@ public void ethical_hacker_route(JTextField answer, JButton cont) {  // link but
 
             panel_answer.remove(answer);
             panel_answer.remove(submit_b2);
+
+            help_button.setVisible(true);
+            continue_button.setVisible(true);
         }
     });
 }   // end ethical_hacker_route()
 
-public void transition_game(JButton next_game) {
+public void transition_game(JButton next_game, JButton help_button, JButton continue_button) {
     next_game.addActionListener(new ActionListener() {
         public void actionPerformed(final ActionEvent e) {
             String html = "<html>Your new task: "
@@ -502,6 +518,8 @@ public void transition_game(JButton next_game) {
             panel_answer.remove(answer);
             panel_answer.remove(submit_b2);
 
+            help_button.setVisible(true);
+            continue_button.setVisible(true);
         }
     });
 }

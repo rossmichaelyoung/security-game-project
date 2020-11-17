@@ -278,19 +278,6 @@ class CyberAdventure extends JPanel {
         // Start Game
 //        SwingUtilities.invokeLater(SecurityGame::showFrame);
 
-        /* ***** PLAYER STATUS COMPONENTS ***** */
-        // JFrame status_frame = new JFrame();
-        // status_frame.setTitle("Player Status");
-
-        // JPanel status_bckgrnd = new JPanel();
-        // status_bckgrnd.setBackground(Color.WHITE);
-
-        // /* ***** ANSWER OPTIONS COMPONENTS ***** */
-        // JFrame options_frame = new JFrame();
-        // options_frame.setTitle("Make a Decision");
-
-        // JPanel options_bckgrnd = new JPanel();
-        // options_bckgrnd.setBackground(Color.WHITE);
 
         /* ***** GAME CONTENT FRAME COMPONENTS ***** */
         /* layers: frame -> panel_bckgrnd -> panel_game + panel_buttons */
@@ -444,23 +431,23 @@ class CyberAdventure extends JPanel {
 
         phys.info();
         phys.intro_lesson();
-        phys.interface_layout(frame, panel_game, panel_bckgrnd, panel_question, panel_answer, panel_choices);
+        phys.interface_layout(frame, panel_game, panel_bckgrnd, panel_buttons, panel_question, panel_answer, panel_choices);
         JTextField answer = phys.answer_input();
         JButton submit_b = phys.submit();
 
-        phys.add_panels(panel_game, answer, submit_b);
+        phys.add_panels(panel_game, answer, submit_b, help_button, continue_button);
         /* QUESTION 1 */
-        phys.scene_one(answer, submit_b, panel_game, proceed);
+        phys.scene_one(answer, submit_b, panel_game, proceed, help_button, continue_button);
         /* QUESTION 2 */
         JButton submit_b2 = phys.submit();
-        phys.scene_two(answer, submit_b2, next_alt, next_alt2);
+        phys.scene_two(answer, submit_b2, next_alt, next_alt2, help_button, continue_button);
         /* QUESTION 2 ALTERNATIVE ROUTE -- GO TO SQL ATTACK */
-        phys.transition_game(next_game);
-        phys.scene_two_alt(answer, submit_b2, next_alt, next_game);
+        phys.transition_game(next_game, help_button, continue_button);
+        phys.scene_two_alt(answer, submit_b2, next_alt, next_game, help_button, continue_button);
         /* QUESTION 2 ALTERNATIVE ROUTE -- GO TO SQL ATTACK, DIFFERENT TEXT DISPLAYED */
-        phys.scene_two_alt2(answer, submit_b2, next_alt2, next_game);
+        phys.scene_two_alt2(answer, submit_b2, next_alt2, next_game, help_button, continue_button);
         /* QUESTION 3 */
-        phys.ethical_hacker_route(answer, continue_button);
+        phys.ethical_hacker_route(answer, help_button, continue_button);
         /* physical aspects section */
 
         /* ***** DISPLAY PANEL WHERE GAME CONTENT WILL BE PLACED ***** */
@@ -469,6 +456,7 @@ class CyberAdventure extends JPanel {
         /* ***** BUTTONS PANEL COMPONENTS ***** */
         panel_bckgrnd.add(panel_buttons); // add panel with buttons
         panel_buttons.add(exit_button); // add buttons
+        panel_buttons.add(Box.createHorizontalGlue());
         panel_buttons.add(Box.createRigidArea(new Dimension(500, 0))); // spacing between buttons
         panel_buttons.add(help_button); // add buttons
         panel_buttons.add(Box.createRigidArea(new Dimension(0, 20))); // spacing between buttons
