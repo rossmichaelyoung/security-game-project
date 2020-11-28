@@ -86,7 +86,7 @@ class CyberAdventure extends JPanel {
 
     }
 
-    public static void createAnswerButton() {
+    public static JButton createAnswerButton() {
         answerFrame = new JFrame();
         answerFrame.setTitle("Answer");
         JTextArea answerTextArea = new JTextArea();
@@ -98,17 +98,17 @@ class CyberAdventure extends JPanel {
         answerFrame.setVisible(false);
         answerFrame.getContentPane().add(answerPane);
 
-        answerButton = gui.answer_button(panel_buttons);
-        answerButton.setVisible(false);
-        answerButton.addActionListener(event -> {
+        JButton button = gui.answer_button(panel_buttons);
+        button.setVisible(false);
+        button.addActionListener(event -> {
             if (currentGame == Game.SQL) {
-                if(answerButton.getText().equals("SHOW ANSWER")) {
-                    answerButton.setText("HIDE ANSWER");
+                if(button.getText().equals("SHOW ANSWER")) {
+                    button.setText("HIDE ANSWER");
                     SQLInjection.Progress currentProgress = sqlInjection.getProgress();
                     String answer = "";
                     switch (currentProgress) {
                         case DatabaseType:
-                            answer = "ANSWER: \n" +
+                            answer = "ANSWER (EXECUTE THE BELOW COMMAND IN THE TOP SEARCH BAR TO MOVE ON): \n" +
                                     "' UNION SELECT version()-- \n\n" +
                                     "Explanation: \n" +
                                     "You need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
@@ -121,7 +121,7 @@ class CyberAdventure extends JPanel {
                                     "That pre-written command means to return all items in the inventory table that anything (the % symbol is a wildcard meaning it can be anything)";
                             break;
                         case PublicTableNames:
-                            answer = "ANSWER: \n" +
+                            answer = "ANSWER (EXECUTE THE BELOW COMMAND IN THE TOP SEARCH BAR TO MOVE ON): \n" +
                                     "' UNION SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'-- \n\n" +
                                     "Explanation: \n" +
                                     "Once again, you need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
@@ -131,7 +131,7 @@ class CyberAdventure extends JPanel {
                                     "In order to extract usernames and passwords, we need to know the name of the table that might contain them";
                             break;
                         case ColumnNames:
-                            answer = "ANSWER: \n" +
+                            answer = "ANSWER (EXECUTE THE BELOW COMMAND IN THE TOP SEARCH BAR TO MOVE ON): \n" +
                                     "' UNION SELECT column_name FROM information_schema.columns WHERE table_name = 'users'-- \n\n" +
                                     "Explanation: \n" +
                                     "Once again, you need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
@@ -142,7 +142,7 @@ class CyberAdventure extends JPanel {
                                     "Similar to the previous answer, we can SELECT the column names in users from the information_schema.columns \n";
                             break;
                         case UsernamesAndPasswords:
-                            answer = "ANSWER: \n" +
+                            answer = "ANSWER (EXECUTE THE BELOW COMMAND IN THE TOP SEARCH BAR TO MOVE ON): \n" +
                                     "' UNION SELECT username || ' ' || password FROM users-- \n\n" +
                                     "Explanation: \n" +
                                     "Once again, you need to start your SQL injection with a single quote (') in order to escape out of the quotes in place \n" +
@@ -161,26 +161,37 @@ class CyberAdventure extends JPanel {
                     answerTextArea.setText(answer);
                     answerFrame.setVisible(true);
                 } else {
-                    answerButton.setText("SHOW ANSWER");
+                    button.setText("SHOW ANSWER");
                     answerFrame.setVisible(false);
                 }
-            } else if(currentGame == Game.StrongPasswords) {
-                if(mainButton.getText().equals("Brute Force Attack")) {
+            }
+        });
+
+        return button;
+    }
+
+    public static JButton createPasswordCrackerAttackButton() {
+        JButton button = gui.password_cracker_attack_button(panel_buttons);
+        button.setVisible(false);
+        button.addActionListener(event -> {
+            if (currentGame == Game.StrongPasswords) {
+                if (mainButton.getText().equals("Brute Force Attack")) {
                     mainButton.setPreferredSize(new Dimension(145, 20));
                     mainButton.setText("Dictionary Attack");
-                    answerButton.setText("SWITCH TO BRUTE FORCE ATTACK");
+                    button.setText("SWITCH TO BRUTE FORCE ATTACK");
                     characterSpacePanel.setVisible(false);
                     timeoutPanel.setVisible(false);
                 } else {
                     mainButton.setPreferredSize(new Dimension(145, 20));
                     mainButton.setText("Brute Force Attack");
-                    answerButton.setText("SWITCH TO DICTIONARY ATTACK");
+                    button.setText("SWITCH TO DICTIONARY ATTACK");
                     characterSpacePanel.setVisible(true);
                     timeoutPanel.setVisible(true);
                 }
             }
         });
-        panel_buttons.add(answerButton);
+
+        return button;
     }
 
     public static void createSQLBasicsButton() {
@@ -192,7 +203,7 @@ class CyberAdventure extends JPanel {
         JScrollPane sqlBasicsPane = new JScrollPane(sqlBasicsTextArea);
         sqlBasicsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        sqlBasicsFrame.setSize(1200, 300);
+        sqlBasicsFrame.setSize(1200, 400);
         sqlBasicsFrame.setVisible(false);
         sqlBasicsFrame.getContentPane().add(sqlBasicsPane);
 
@@ -202,18 +213,24 @@ class CyberAdventure extends JPanel {
         sqlBasicsButton.addActionListener(event -> {
             if(sqlBasicsButton.getText().equals("SHOW SQL BASICS")) {
                 sqlBasicsButton.setText("HIDE SQL BASCIS");
-                String sqlBasics = "<html>SQL Basics For SQL Injection: <br/>" +
+                String sqlBasics = "<html><b>SQL Basics For SQL Injection </b> <br/>" +
+                        "SQL (Structured Query Language) is a language used in programming to communicate with a database <br/>" +
+                        "Below are some commands in SQL that might be useful <br/><br/>" +
                         "1. SELECT column_name FROM table_name <br/>" +
-                        "The above line tells a database to return all the values in the column_name column from the table table_name <br/><br/>" +
+                        "   The above line tells a database to return all the values in the column_name column from the table table_name <br/><br/>" +
+                        "   Example: say there is a table called inventory and a column in inventory called items. To get all the items from inventory, you would use the command: <br/>" +
+                        "   SELECT items FROM inventory <br/><br/>" +
                         "2. SELECT column_name1 FROM table_name WHERE column_name2 = 'some value' <br/>" +
-                        "The above line does the same as #1 except the database will now only return the values in column_name1 where the value in column_name2 equals the value you specified <br/>" +
-                        "The value you specify in the WHERE clause needs to be between single quotes <br/><br/>" +
+                        "   The above line does the same as #1 except the database will now only return the values in column_name1 where the value in column_name2 equals the value you specified <br/>" +
+                        "   The value you specify in the WHERE clause needs to be between single quotes <br/><br/>" +
+                        "   Example: using the example table from (1), say you want only the items that are called 'chair'. To do this, you would use the command: <br/>" +
+                        "   SELECT items FROM inventory WHERE items = 'chair' <br/><br/>" +
                         "3. SELECT column_name1 FROM table_name1 UNION SELECT column_name2 FROM table_name2 <br/>" +
-                        "The above line uses the keyword UNION to return values from two separate tables (table_name1 and table_name2) <br/>" +
-                        "The UNION command is very important for an SQL injection because we want to return information from the table containing usernames and passwords and the information the search normally returns <br/><br/>" +
-                        "4. SELECT column_name1 || ':' || column_name2 FROM table_name <br/>" +
-                        "The above line concatenates the values in column_name1, a colon, and column_name2 together in one line <br/>" +
-                        "column_name1:column_name2 </html>";
+                        "   The above line uses the keyword UNION to return values from two separate tables (table_name1 and table_name2) <br/>" +
+                        "   The UNION command is very important for an SQL injection because we want to return information from the table containing usernames and passwords and the information the search normally returns <br/><br/>" +
+                        "4. SELECT column_name1 || ' ' || column_name2 FROM table_name <br/>" +
+                        "   The above line concatenates the values in column_name1, a space, and column_name2 together in one line <br/>" +
+                        "   column_name1 column_name2 </html>";
 
                 sqlBasicsTextArea.setText(sqlBasics);
                 sqlBasicsFrame.setVisible(true);
@@ -303,8 +320,9 @@ class CyberAdventure extends JPanel {
 
                             setAnswerButtonForNextStep();
 
-                            String helpAndHints = "<html>Now that you know its a PostgreSQL database, you now want to find the names of the tables in this database <br>" +
-                                    "Use the SELECT statement to return the column table_name FROM the table information_schema.tables <br><br>" +
+                            String helpAndHints = "<html>Now that you know its a PostgreSQL database, you now want to find the names of the public tables in this database <br>" +
+                                    "Use the SELECT statement to return the column table_name FROM the table information_schema.tables <br>" +
+                                    "Also, specify in the WHERE clause for the table_schema to be equal to 'public' <br><br>" +
                                     "Remember to start your SQL injection (your search) with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
                         } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.PublicTableNames) && result.contains("users")) {
@@ -316,7 +334,7 @@ class CyberAdventure extends JPanel {
                                     "The users tables likely holds interesting information we want to extract. <br/>\n" +
                                     "Try to find the names of the columns in the users table. <br/><br/>\n" +
                                     "Hint: use a SELECT statement to return the column column_name FROM information_schema.columns <br/>\n" +
-                                    "Don't forget to use a WHERE clause to specify that the table_name needs to be equal to users <br/>\n" +
+                                    "Don't forget to use a WHERE clause to specify that the table_name needs to be equal to 'users' <br/>\n" +
                                     "<br/>\n" +
                                     "Remember to start your SQL injection (your search) with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
@@ -357,6 +375,7 @@ class CyberAdventure extends JPanel {
                     break;
                 case Password:
                     resultsTextArea.setText("");
+                    search = search.trim();
                     String result = dictionaryAttackPasswordCracker.findPasswordGivenHash(search);
                     resultsTextArea.setText(result);
                     break;
@@ -449,7 +468,7 @@ class CyberAdventure extends JPanel {
             explanationFrame.setTitle("Password Cracker");
             explanation = "<html>" +
                     "<b>You are now to crack the passwords you just retrieved from your SQL injection</b> <br/>" +
-                    "Copy and Paste the seemingly random 32 character strings into the box at the top and click 'Crack Password'. <br/>" +
+                    "Copy and Paste the seemingly random 32 character strings into the box at the top on at a time and click 'Crack Password'. <br/>" +
                     "In the background, a password cracker is working to find out what password this seemingly random string corresponds to. <br/>" +
                     "This random string is a hash, which is what websites store in their database instead of an actual password. <br/><br/>" +
                     "Hashes are a one-way function, meaning you cannot reverse the process, that transforms a string into a seemingly random assortment of characters. <br/>" +
@@ -464,14 +483,13 @@ class CyberAdventure extends JPanel {
                     "The password you enter at the top will be converted to its hash similar to the passwords you extracted from the SQL injection. <br/>" +
                     "Whichever attack you choose to run on the password (brute force or dictionary) will try to crack the password you have entered using your entered password's hash, simulating a real scenario of cracking a password. <br/><br/>" +
                     "The character set is the number of different characters a password uses. <br/>" +
-                    "Some password might only use lowercase letters, which means this password has a character set length of 26. <br/>" +
+                    "Some passwords might only use lowercase letters, which means this password has a character set length of 26. <br/>" +
                     "The longer your password's character set length and the longer your password itself is, the harder it is to crack your password using a brute force attack. <br/><br/>" +
                     "A brute force attack attempts to crack a password by trying every possible combination of characters in a character set for a given length of password. <br/>" +
                     "The maximum number of possibilities a brute force attack has to try to crack a password is (the character set's length) ^ (the password's length) <br/><br/>" +
-                    "After you have tried brute force attacks on various passwords, switch to the dictionary attack and see if passwords that could not be broken by brute force can be broken by the dictionary attack. <br/>" +
+                    "After you have tried brute force attacks on various passwords, switch to the dictionary attack and see if passwords that could not be broken by brute force can be broken by the dictionary attack. <br/><br/>" +
                     "A dictionary attack scans through a file of known passwords, computes each password's hash, and compares the the hash value to the target hash value. If they match, the password as been cracked. <br/>" +
                     "A dictionary attack has the advantage of not wasting time computing passwords that no one would likely use, unlike the brute force attack, making a dictionary attack often faster than a brute force attack. <br/>" +
-                    "It also has the advantage of being able to quickly try out longer passwords. <br>" +
                     "The draw back of a dictionary attack is if a given password is not in the dictionary file, it cannot be cracked. <br/><br/>" +
                     "<b>Click on the Help button to get more information about how to analyze what makes a strong password</b>" +
                     "</html>";
@@ -524,6 +542,8 @@ class CyberAdventure extends JPanel {
         panel_buttons.setBackground(Color.DARK_GRAY);
 
         JButton help_button = gui.help_button(panel_buttons);
+        JButton directions_button = gui.directions_button(panel_buttons);
+        JButton passwordCrackerAttackButton = createPasswordCrackerAttackButton();
         continue_button = gui.continue_button(panel_buttons);
 
         continue_button.addActionListener(e -> {
@@ -539,6 +559,7 @@ class CyberAdventure extends JPanel {
 
                         explanationFrame.setVisible(false);
                         displayExplanation();
+                        directions_button.setText("HIDE DIRECTIONS");
                         sqlBasicsButton.setVisible(false);
                         sqlBasicsFrame.setVisible(false);
                     }
@@ -574,29 +595,30 @@ class CyberAdventure extends JPanel {
                     panel_game.add(timeoutPanel);
                     panel_game.add(resultsPanel);
 
-                    answerButton.setVisible(true);
-                    answerButton.setText("SWITCH TO DICTIONARY ATTACK");
+                    passwordCrackerAttackButton.setVisible(true);
+                    passwordCrackerAttackButton.setText("SWITCH TO DICTIONARY ATTACK");
                     resultsPane.setPreferredSize(new Dimension(900, 250));
                     mainButton.setPreferredSize(new Dimension(145, 20));
 
                     explanationFrame.setVisible(false);
                     displayExplanation();
+                    directions_button.setText("HIDE DIRECTIONS");
 
                     String help = "<html>" +
                             "<b>Directions</b><br><br>" +
                             "1. Start by entering a password that is less than 6 characters long and uses the 'Lowercase Letters Only' character set <br/>" +
-                            "Notice how long it takes to crack a password with these constraints <br/><br/>" +
+                            "   Notice how long it takes to crack a password with these constraints <br/><br/>" +
                             "2. Now increase the length of your password to greater than 6 characters and still use the 'Lowercase Letters Only' character set <br/>" +
-                            "If the brute force attack times out, retry the attack with a longer allotted segment of time <br/><br/>" +
+                            "   If the brute force attack times out, retry the attack with a longer allotted segment of time <br/><br/>" +
                             "3. Repeat the above two steps but now vary the character set <br/>" +
-                            "Notice as the character set grows larger, it takes longer to crack a password using a brute force attack <br/>" +
-                            "If a password cannot be creaked within the maximum amount of time of 5 minutes, you're on the right track, although this does not guarantee your password is ironclad <br/><br/>" +
+                            "   Notice as the character set grows larger, it takes longer to crack a password using a brute force attack <br/>" +
+                            "   If a password cannot be creaked within the maximum amount of time of 5 minutes, you're on the right track, although this does not guarantee your password is ironclad <br/><br/>" +
                             "4. Now switch to the dictionary attack using the button at the bottom of the game screen <br/>" +
-                            "Try out various passwords with the dictionary attack, including passwords the brute force attack could not crack within the time constraints <br/>" +
-                            "You might notice some long passwords with a variety of characters could be cracked quickly <br/>" +
-                            "A long password with a variety of characters does not necessarily make it strong. A strong password also needs to be unique <br/>" +
-                            "Avoid using common words, phrases, and character combinations, as a dictionary attack can easily break these passwords, even though they may appear strong <br/><br/>" +
-                            "This is the last activity in the CyberAdventure Game <br/>" +
+                            "   Try out various passwords with the dictionary attack, including passwords the brute force attack could not crack within the time constraints <br/>" +
+                            "   You might notice some long passwords with a variety of characters could be cracked quickly <br/>" +
+                            "   A long password with a variety of characters does not necessarily make it strong. A strong password also needs to be unique <br/>" +
+                            "   Avoid using common words, phrases, and character combinations, as a dictionary attack can easily break these passwords, even though they may appear strong <br/><br/>" +
+                            "   This is the last activity in the CyberAdventure Game <br/>" +
                             "<b>Please press 'Exit' when you are done with this activity</b>" +
                             "</html>";
                     helpTextArea.setText(help);
@@ -616,6 +638,7 @@ class CyberAdventure extends JPanel {
                     panel_bckgrnd.remove(panel_answer);
                     panel_bckgrnd.remove(panel_choices);
                     help_button.setVisible(true);
+                    directions_button.setVisible(true);
 
                     JLabel scene = phys.scene_;
                     scene.setText(null);
@@ -688,8 +711,11 @@ class CyberAdventure extends JPanel {
         panel_bckgrnd.add(panel_buttons); // add panel with buttons
         panel_buttons.add(Box.createRigidArea(new Dimension(10, 140))); // spacing between buttons
         panel_buttons.add(exit_button); // add buttons
-        createAnswerButton();
+        answerButton = createAnswerButton();
+        panel_buttons.add(answerButton);
+        panel_buttons.add(passwordCrackerAttackButton);
         panel_buttons.add(help_button); // add buttons
+        panel_buttons.add(directions_button);
         createSQLBasicsButton();
         panel_buttons.add(continue_button);
 
@@ -706,7 +732,6 @@ class CyberAdventure extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!hasBeenClicked) {
-                    // proceed.setText(null);
 
                     String b_label = "HIDE HELP";
                     help_button.setText(b_label);
@@ -721,6 +746,21 @@ class CyberAdventure extends JPanel {
                 }
                 hasBeenClicked = !hasBeenClicked;
             } // end void actionPerformed()
+        }); // end actionListener()
+
+        // end void actionPerformed()
+        directions_button.addActionListener(e -> {
+            if (directions_button.getText().equals("SHOW DIRECTIONS")) {
+                String b_label = "HIDE DIRECTIONS";
+                directions_button.setText(b_label);
+
+                explanationFrame.setVisible(true);
+            } else if (directions_button.getText().equals("HIDE DIRECTIONS")) {
+                String b_label = "SHOW DIRECTIONS";
+                directions_button.setText(b_label);
+                explanationFrame.dispose();
+                explanationFrame.setVisible(false);
+            }
         }); // end actionListener()
 
         exit_button.addActionListener(new ActionListener() {
