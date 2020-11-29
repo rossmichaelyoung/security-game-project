@@ -459,7 +459,16 @@ class CyberAdventure extends JPanel {
                     "An SQL Injection is essentially the act of typing in SQL code into the search bar instead of searching for items normally. <br/><br/>\n\n" +
                     "The pre-written SQL command being used by the backend software is: <br/> SELECT item FROM inventory WHERE item ILIKE '% whatever you searched %' AND available = TRUE <br/><br/>\n" +
                     "This command means the database is going to SELECT (and return) all the items FROM the inventory table that match whatever you searched for and are also available. <br/>\n" +
-                    "An SQL Injection circumvents the intended logic of this pre-written SQL statement by inserting SQL code into the 'whatever you search' part. <br/><br/>\n" +
+                    "An SQL Injection circumvents the intended logic of this pre-written SQL statement by inserting SQL code into the 'whatever you searched' part. <br/>" +
+                    "Essentially, you want to insert SQL code into the 'whatever you searched' part to tell the database to return not only items from inventory but also other things, like passwords from another table.<br/><br/>" +
+
+                    "To do this, you will start your query with a single quote ('), to escape the quotes in the 'whatever you searched' part, a UNION statement, your SQL SELECT statement, and a comment command (--), which tells the database to ignore everything after the -- <br><br>" +
+
+                    "You might type in the following in the search bar: ' UNION SELECT some_stuff FROM some_table -- <br>" +
+                    "To the database, the SQL command it sees and executes is: <br>" +
+                    "SELECT item FROM inventory WHERE item ILIKE '%' UNION SELECT some_stuff FROM some_table --%' AND available = TRUE <br>" +
+                    "This is telling the database to return items from inventory and to also return some_stuff from some_table <br><br>" +
+
                     "The current page has a search bar up top for a user to find current items in the store's inventory. <br/>\n" +
                     "Below the search bar is the area where result from your search are returned. <br/>\n" +
                     "The area lowest on the screen shows you the SQL statement executed by the store's backend software to find the item you searched for.<br/>\n" +
