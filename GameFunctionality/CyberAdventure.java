@@ -387,15 +387,17 @@ class CyberAdventure extends JPanel {
 
                     if(mainButton.getText().equals("Brute Force Attack")) {
                         String selectedCharacterSpace = String.valueOf(characterSpaceOptions.getSelectedItem());
+                        String explainToUser;
                         if (bruteForcePasswordCracker.checkCharacterSpace(search, selectedCharacterSpace)) {
                             bruteForcePasswordCracker.setFound(false);
                             resultsTextArea.setText("");
+
                             try {
                                 passwordHash = bruteForcePasswordCracker.bytestoHexString(bruteForcePasswordCracker.getHash(search));
                                 BigInteger n = new BigInteger(Integer.toString(bruteForcePasswordCracker.getCharacterSpace(selectedCharacterSpace).length()));
                                 BigInteger numToCheck = n.pow(search.length());
                                 String possibilities = numToCheck.toString();
-                                String explainToUser = "Your password " + search + " has the hash " + passwordHash + "\n" +
+                                explainToUser = "\n\nYour password " + search + " has the hash " + passwordHash + "\n" +
                                         "The brute force attack is trying every password permutation with your given password's length and your chosen character set. \n" +
                                         "The brute force attack then converts each password permutation to its hash, and then compares" +
                                         " this hash value to your password's hash value. \n" +
@@ -407,24 +409,30 @@ class CyberAdventure extends JPanel {
                                 result = bruteForcePasswordCracker.findPasswordGivenHash(passwordHash, selectedCharacterSpace, search.length(), timeAllotted);
                             } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
                                 result = "Could not crack password";
+                                explainToUser = "";
                             }
                         } else {
                             result = "Characters found in password that are not in character set \n" +
                                     "Please adjust the character set to match your password";
+                            explainToUser = "";
                         }
+                        resultsTextArea.setText(result);
+                        resultsTextArea.append(explainToUser);
                     } else {
+                        String explainToUser;
                         try {
                             passwordHash = dictionaryAttackPasswordCracker.bytestoHexString(dictionaryAttackPasswordCracker.getHash(search));
-                            String explainToUser = "Your password " + search + " has the hash " + passwordHash + "\n" +
+                            explainToUser = "\nYour password " + search + " has the hash " + passwordHash + "\n" +
                                     "The dictionary attack is scanning through a large file of known passwords and converting each password into its hash \n" +
                                     "If a password's hash from the file of passwords matches your password's hash, then your password has been cracked \n\n";
-                            resultsTextArea.setText(explainToUser);
                             result = dictionaryAttackPasswordCracker.findPasswordGivenHash(passwordHash);
                         } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
                             result = "Could not find password";
+                            explainToUser = "";
                         }
+                        resultsTextArea.setText(result);
+                        resultsTextArea.append(explainToUser);
                     }
-                    resultsTextArea.append(result);
                     break;
                 case PhysicalAspects:
                     break;
@@ -774,8 +782,7 @@ class CyberAdventure extends JPanel {
 
         exit_button.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                frame.dispose();
-                helpFrame.dispose();
+                System.exit(0);
             } // end void actionPerformed()
         }); // end actionListener()
 
