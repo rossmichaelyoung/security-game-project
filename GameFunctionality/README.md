@@ -2,42 +2,22 @@
   
 ### CyberAdventure.java  
 
-includes main and GUI declarations for panels, frames, etc.  
-GameEffects.java  
-  
-includes all GUI properties like panel sizing, button designs, fonts, etc. 
+CyberAdventure.java contains the CyberAdventure Game
 
-To compile on Mac:
+To compile on Mac from within the GameFunctionality Folder:
 ```
 javac -cp ".:../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java PhysicalAspects.java
 ```
-To run on Mac:
+To run on Mac from within the GameFunctionality Folder:
 ```
 java -cp ".:../Resources/postgresql-42.2.18.jar" CyberAdventure
 ```
 
-To compile on Windows:
+To compile on Windows from within the GameFunctionality Folder:
 ```
 javac -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java PhysicalAspects.java
 ```
-To run on Windows:
+To run on Windows from within the GameFunctionality Folder:
 ```
 java -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure
 ```
-  
-### GameEffects.java  
-  
- includes functions for the functionality of the game itself
- 
-### DictionaryAttackPasswordCracker.java  
-  
- make sure to unzip the **dictionary.txt.zip** file before running this program and make sure to **not add dictionary.txt** to git 
- 
-### SQLInjection.java  
-
- you need to add the **postgresql-42.2.18.jar** file to the build path to run this program 
- 
- Enter the following to perform an SQL injection for the usernames and passwords in our database 
- ``` 
- ' UNION SELECT username || ' ' || password FROM users-- 
- ```
