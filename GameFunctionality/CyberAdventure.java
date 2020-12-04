@@ -68,7 +68,10 @@ class CyberAdventure extends JPanel {
         /* ***** RESULTS COMPONENT ***** */
         resultsPanel = new JPanel();
         resultsTextArea = new JTextArea();
+        resultsTextArea.setLineWrap(true);
+        resultsTextArea.setWrapStyleWord(true);
         resultsTextArea.setEditable(false);
+
         resultsPane = new JScrollPane(resultsTextArea);
         resultsPane.setPreferredSize(new Dimension(680, 200));
         resultsPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
