@@ -78,7 +78,7 @@ public class BruteForcePasswordCracker {
             if(Arrays.equals(hashToFind, currentPasswordHash)) {
                 found = true;
                 BigDecimal displayTime = new BigDecimal((System.currentTimeMillis() - start) / 1000.0);
-                output.append("The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n" +
+                output.append("The hash " + bytestoHexString(hashToFind) + " = " + currentPassword + "\n\n" +
                         "Password cracked in " + displayTime.setScale(2, RoundingMode.CEILING) + " seconds\n" +
                         "Using character set " + cs);
                 return;

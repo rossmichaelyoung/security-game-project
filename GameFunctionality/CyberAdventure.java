@@ -1,5 +1,4 @@
 import java.math.BigInteger;
-import java.util.*;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -8,6 +7,7 @@ import javax.swing.border.EmptyBorder;
 
 import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.util.concurrent.atomic.AtomicReference;
 
 class CyberAdventure extends JPanel {
 
@@ -22,28 +22,38 @@ class CyberAdventure extends JPanel {
     }
 
     public static Game currentGame;
+
     public static JFrame answerFrame;
     public static JFrame helpFrame;
     public static JFrame explanationFrame;
     public static JFrame sqlBasicsFrame;
+
     public static JPanel panel_game;
     public static JPanel resultsPanel;
     public static JPanel utilityPanel;
     public static JPanel panel_buttons;
     public static JPanel timeoutPanel;
     public static JPanel characterSpacePanel;
+
     public static JScrollPane resultsPane;
+
     public static JButton mainButton;
     public static JButton answerButton;
     public static JButton sqlBasicsButton;
     public static JButton continue_button;
+    public static JButton directions_button;
+
     public static JLabel searchLabel;
+
     public static JTextArea searchTextArea;
     public static JTextArea resultsTextArea;
-    public static JEditorPane helpTextArea;
     public static JTextArea utilityTextArea;
+
+    public static JEditorPane helpTextArea;
+
     public static JComboBox<String> characterSpaceOptions;
     public static JComboBox<String> timeOptions;
+
     public static int numAttempts;
 
     public static void setCurrentGame(Game game) {
@@ -74,6 +84,8 @@ class CyberAdventure extends JPanel {
         utilityPanel = new JPanel();
         utilityTextArea = new JTextArea();
         utilityTextArea.setEditable(false);
+        utilityTextArea.setLineWrap(true);
+        utilityTextArea.setWrapStyleWord(true);
         JScrollPane utilityPane = new JScrollPane(utilityTextArea);
         utilityPanel.add(Box.createRigidArea(new Dimension(46, 0)));
 
@@ -176,14 +188,18 @@ class CyberAdventure extends JPanel {
         button.addActionListener(event -> {
             if (currentGame == Game.StrongPasswords) {
                 if (mainButton.getText().equals("Brute Force Attack")) {
+                    mainButton.setEnabled(true);
                     mainButton.setPreferredSize(new Dimension(145, 20));
                     mainButton.setText("Dictionary Attack");
+                    resultsTextArea.setText("");
                     button.setText("SWITCH TO BRUTE FORCE ATTACK");
                     characterSpacePanel.setVisible(false);
                     timeoutPanel.setVisible(false);
                 } else {
+                    mainButton.setEnabled(true);
                     mainButton.setPreferredSize(new Dimension(145, 20));
                     mainButton.setText("Brute Force Attack");
+                    resultsTextArea.setText("");
                     button.setText("SWITCH TO DICTIONARY ATTACK");
                     characterSpacePanel.setVisible(true);
                     timeoutPanel.setVisible(true);
@@ -295,14 +311,30 @@ class CyberAdventure extends JPanel {
         searchPanel.add(searchPane);
         searchPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
+        JFrame loadingFrame = new JFrame();
+        JEditorPane loadingTextArea = new JEditorPane();
+        loadingTextArea.setContentType("text/html");
+        loadingTextArea.setEditable(false);
+        JScrollPane loadingPane = new JScrollPane(loadingTextArea);
+        loadingPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+
+        loadingFrame.setSize(new Dimension(500, 100));
+        loadingFrame.setVisible(false);
+        loadingFrame.getContentPane().add(loadingPane);
+        loadingTextArea.setText("<html><h3>Please Wait While The Password Is Being Cracked</h3></html>");
+
         mainButton = new JButton("Search");
         mainButton.setPreferredSize(new Dimension(138, 20));
         mainButton.addActionListener(e -> {
+            explanationFrame.setVisible(false);
+            directions_button.setText("SHOW DIRECTIONS");
+
             String search = searchTextArea.getText();
             search = search.replaceAll("\\n", "");
             search = search.replaceAll("\\r", "");
             searchTextArea.setText("");
 
+            AtomicReference<String> result = new AtomicReference<>("");
             switch(currentGame) {
                 case SQL:
                     if(!sqlInjection.getProgress().equals(SQLInjection.Progress.Done)) {
@@ -314,8 +346,8 @@ class CyberAdventure extends JPanel {
                             "FROM inventory \n" +
                             "WHERE item ILIKE '%" + search + "%' AND available = TRUE";
                     try {
-                        String result = sqlInjection.selectItem(search);
-                        if (sqlInjection.getProgress().equals(SQLInjection.Progress.DatabaseType) && result.contains("PostgreSQL 12.4")) {
+                        result.set(sqlInjection.selectItem(search));
+                        if (sqlInjection.getProgress().equals(SQLInjection.Progress.DatabaseType) && result.get().contains("PostgreSQL 12.4")) {
                             sqlInjection.setProgress(SQLInjection.Progress.PublicTableNames);
 
                             setAnswerButtonForNextStep();
@@ -325,7 +357,7 @@ class CyberAdventure extends JPanel {
                                     "Also, specify in the WHERE clause for the table_schema to be equal to 'public' <br><br>" +
                                     "Remember to start your SQL injection (your search) with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
-                        } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.PublicTableNames) && result.contains("users")) {
+                        } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.PublicTableNames) && result.get().contains("users")) {
                             sqlInjection.setProgress(SQLInjection.Progress.ColumnNames);
 
                             setAnswerButtonForNextStep();
@@ -338,7 +370,7 @@ class CyberAdventure extends JPanel {
                                     "<br/>\n" +
                                     "Remember to start your SQL injection (your search) with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
-                        } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.ColumnNames) && result.contains("password")) {
+                        } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.ColumnNames) && result.get().contains("password")) {
                             sqlInjection.setProgress(SQLInjection.Progress.UsernamesAndPasswords);
 
                             setAnswerButtonForNextStep();
@@ -351,8 +383,9 @@ class CyberAdventure extends JPanel {
                                     "\n" +
                                     "Remember to start your SQL injection (your search) with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
-                        } else if (result.contains("johnsmith") && result.contains("dc4b56ff4967374b261a29cd4a90580d")) {
+                        } else if (result.get().contains("johnsmith") && result.get().contains("dc4b56ff4967374b261a29cd4a90580d")) {
                             sqlInjection.setProgress(SQLInjection.Progress.Done);
+                            mainButton.setVisible(false);
 
                             setAnswerButtonForNextStep();
                             continue_button.setVisible(true);
@@ -361,10 +394,10 @@ class CyberAdventure extends JPanel {
                             helpTextArea.setText(helpAndHints);
                         }
 
-                        resultsTextArea.setText(result);
+                        resultsTextArea.setText(result.get());
                     } catch (SQLException sqlException) {
-                        String result = "Error Selecting Item(s)";
-                        resultsTextArea.setText(result);
+                        result.set("Error Selecting Item(s)");
+                        resultsTextArea.setText(result.get());
                     }
 
                     utilityTextArea.setText(sqlStatement);
@@ -374,64 +407,90 @@ class CyberAdventure extends JPanel {
                     }
                     break;
                 case Password:
+                    String finalSearch = search;
                     resultsTextArea.setText("");
-                    search = search.trim();
-                    String result = dictionaryAttackPasswordCracker.findPasswordGivenHash(search);
-                    resultsTextArea.setText(result);
+                    if(finalSearch.matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$") && finalSearch.length() == 32) {
+                        SwingUtilities.invokeLater(() -> {
+                            result.set(dictionaryAttackPasswordCracker.findPasswordGivenHash(finalSearch.trim()));
+                            resultsTextArea.setText(result.get());
+                            loadingFrame.setVisible(false);
+                            mainButton.setEnabled(true);
+                            continue_button.setVisible(true);
+                        });
+
+                        loadingFrame.setVisible(true);
+                        mainButton.setEnabled(false);
+                    } else {
+                        resultsTextArea.setText("Please enter a hash string");
+                    }
                     break;
                 case StrongPasswords:
                     resultsTextArea.setText("");
 
-                    String passwordHash;
-                    mainButton.setPreferredSize(new Dimension(175, 5));
+                    if(search.length() == 0) {
+                        resultsTextArea.setText("Please enter a password");
+                    } else {
+                        if(mainButton.getText().equals("Brute Force Attack")) {
+                            String selectedCharacterSpace = String.valueOf(characterSpaceOptions.getSelectedItem());
+                            if (bruteForcePasswordCracker.checkCharacterSpace(search, selectedCharacterSpace)) {
+                                bruteForcePasswordCracker.setFound(false);
 
-                    if(mainButton.getText().equals("Brute Force Attack")) {
-                        String selectedCharacterSpace = String.valueOf(characterSpaceOptions.getSelectedItem());
-                        String explainToUser;
-                        if (bruteForcePasswordCracker.checkCharacterSpace(search, selectedCharacterSpace)) {
-                            bruteForcePasswordCracker.setFound(false);
-                            resultsTextArea.setText("");
+                                try {
+                                    String passwordHash = bruteForcePasswordCracker.bytestoHexString(bruteForcePasswordCracker.getHash(search));
+                                    BigInteger n = new BigInteger(Integer.toString(bruteForcePasswordCracker.getCharacterSpace(selectedCharacterSpace).length()));
+                                    BigInteger numToCheck = n.pow(search.length());
+                                    String possibilities = numToCheck.toString();
+                                    String explainToUser = "Your password " + search + " has the hash " + passwordHash + "\n" +
+                                            "The brute force attack is trying every password permutation with your given password's length and your chosen character set. \n" +
+                                            "The brute force attack then converts each password permutation to its hash, and then compares" +
+                                            " this hash value to your password's hash value. \n" +
+                                            "If these hash values match, your password has been cracked \n\n" +
+                                            "The brute force attack will have to check at most " + possibilities + " passwords to crack your password \n\n";
+                                    resultsTextArea.setText(explainToUser);
 
-                            try {
-                                passwordHash = bruteForcePasswordCracker.bytestoHexString(bruteForcePasswordCracker.getHash(search));
-                                BigInteger n = new BigInteger(Integer.toString(bruteForcePasswordCracker.getCharacterSpace(selectedCharacterSpace).length()));
-                                BigInteger numToCheck = n.pow(search.length());
-                                String possibilities = numToCheck.toString();
-                                explainToUser = "\n\nYour password " + search + " has the hash " + passwordHash + "\n" +
-                                        "The brute force attack is trying every password permutation with your given password's length and your chosen character set. \n" +
-                                        "The brute force attack then converts each password permutation to its hash, and then compares" +
-                                        " this hash value to your password's hash value. \n" +
-                                        "If these hash values match, your password has been cracked \n\n" +
-                                        "The brute force attack will have to check at most " + possibilities + " passwords to crack your password \n\n";
-                                resultsTextArea.setText(explainToUser);
+                                    int timeAllotted = Integer.parseInt(timeOptions.getSelectedItem().toString());
+                                    String finalSearch1 = search;
 
-                                int timeAllotted = Integer.parseInt(timeOptions.getSelectedItem().toString());
-                                result = bruteForcePasswordCracker.findPasswordGivenHash(passwordHash, selectedCharacterSpace, search.length(), timeAllotted);
-                            } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-                                result = "Could not crack password";
-                                explainToUser = "";
+                                    SwingUtilities.invokeLater(() -> {
+                                        result.set(bruteForcePasswordCracker.findPasswordGivenHash(passwordHash, selectedCharacterSpace, finalSearch1.length(), timeAllotted));
+                                        resultsTextArea.setText(result.get());
+                                        loadingFrame.setVisible(false);
+                                        mainButton.setEnabled(true);
+                                    });
+
+                                    loadingFrame.setVisible(true);
+                                    mainButton.setEnabled(false);
+                                    resultsTextArea.setText(explainToUser);
+                                } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+                                    result.set("Could not crack password");
+                                    resultsTextArea.setText(result.get());
+                                }
+                            } else {
+                                result.set("Characters found in password that are not in character set \n" +
+                                        "Please adjust the character set to match your password");
+                                resultsTextArea.setText(result.get());
                             }
                         } else {
-                            result = "Characters found in password that are not in character set \n" +
-                                    "Please adjust the character set to match your password";
-                            explainToUser = "";
+                            try {
+                                String passwordHash = dictionaryAttackPasswordCracker.bytestoHexString(dictionaryAttackPasswordCracker.getHash(search));
+                                String explainToUser = "Your password " + search + " has the hash " + passwordHash + "\n" +
+                                        "The dictionary attack is scanning through a large file of known passwords and converting each password into its hash \n" +
+                                        "If a password's hash from the file of passwords matches your password's hash, then your password has been cracked \n\n";
+                                SwingUtilities.invokeLater(() -> {
+                                    result.set(dictionaryAttackPasswordCracker.findPasswordGivenHash(passwordHash));
+                                    resultsTextArea.setText(result.get());
+                                    loadingFrame.setVisible(false);
+                                    mainButton.setEnabled(true);
+                                });
+
+                                loadingFrame.setVisible(true);
+                                mainButton.setEnabled(false);
+                                resultsTextArea.setText(explainToUser);
+                            } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
+                                result.set("Could not find password");
+                                resultsTextArea.setText(result.get());
+                            }
                         }
-                        resultsTextArea.setText(result);
-                        resultsTextArea.append(explainToUser);
-                    } else {
-                        String explainToUser;
-                        try {
-                            passwordHash = dictionaryAttackPasswordCracker.bytestoHexString(dictionaryAttackPasswordCracker.getHash(search));
-                            explainToUser = "\nYour password " + search + " has the hash " + passwordHash + "\n" +
-                                    "The dictionary attack is scanning through a large file of known passwords and converting each password into its hash \n" +
-                                    "If a password's hash from the file of passwords matches your password's hash, then your password has been cracked \n\n";
-                            result = dictionaryAttackPasswordCracker.findPasswordGivenHash(passwordHash);
-                        } catch (NoSuchAlgorithmException noSuchAlgorithmException) {
-                            result = "Could not find password";
-                            explainToUser = "";
-                        }
-                        resultsTextArea.setText(result);
-                        resultsTextArea.append(explainToUser);
                     }
                     break;
                 case PhysicalAspects:
@@ -561,7 +620,7 @@ class CyberAdventure extends JPanel {
         panel_buttons.setBackground(Color.DARK_GRAY);
 
         JButton help_button = gui.help_button(panel_buttons);
-        JButton directions_button = gui.directions_button(panel_buttons);
+        directions_button = gui.directions_button(panel_buttons);
         JButton passwordCrackerAttackButton = createPasswordCrackerAttackButton();
         continue_button = gui.continue_button(panel_buttons);
 
@@ -572,7 +631,17 @@ class CyberAdventure extends JPanel {
                         setCurrentGame(Game.Password);
                         mainButton.setText("Crack Password");
                         searchTextArea.setText("");
-                        utilityTextArea.setText(resultsTextArea.getText());
+
+                        String[] splitArray = resultsTextArea.getText().split("\\s+");
+                        StringBuilder hashes = new StringBuilder();
+                        for(int i = 0; i < splitArray.length; i++) {
+                            String currentWord = splitArray[i];
+                            if(currentWord.matches("^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]+$") && currentWord.length() == 32) {
+                                hashes.append(splitArray[i]).append("\n");
+                            }
+                        }
+
+                        utilityTextArea.setText(hashes.toString());
                         resultsTextArea.setText("");
                         searchLabel.setText("Enter Password Here:");
 
@@ -581,6 +650,8 @@ class CyberAdventure extends JPanel {
                         directions_button.setText("HIDE DIRECTIONS");
                         sqlBasicsButton.setVisible(false);
                         sqlBasicsFrame.setVisible(false);
+                        mainButton.setVisible(true);
+                        continue_button.setVisible(false);
                     }
                     break;
                 case Password:
@@ -643,6 +714,7 @@ class CyberAdventure extends JPanel {
                     helpTextArea.setText(help);
 
                     continue_button.setVisible(false);
+                    mainButton.setEnabled(true);
                     break;
                 case StrongPasswords:
                     break;
