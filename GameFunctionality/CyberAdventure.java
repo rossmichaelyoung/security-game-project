@@ -351,7 +351,7 @@ class CyberAdventure extends JPanel {
                                     "\n" +
                                     "Remember to start your SQL injection (your search) with a single quote (') and a <br>UNION statement and to end your SQL statement with a comment command, which is -- <br></html>";
                             helpTextArea.setText(helpAndHints);
-                        } else if (sqlInjection.getProgress().equals(SQLInjection.Progress.UsernamesAndPasswords) && result.contains("johnsmith") && result.contains("dc4b56ff4967374b261a29cd4a90580d")) {
+                        } else if (result.contains("johnsmith") && result.contains("dc4b56ff4967374b261a29cd4a90580d")) {
                             sqlInjection.setProgress(SQLInjection.Progress.Done);
 
                             setAnswerButtonForNextStep();
@@ -456,7 +456,7 @@ class CyberAdventure extends JPanel {
         JScrollPane explanationPane = new JScrollPane(explanationTextArea);
         explanationPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
 
-        explanationFrame.setSize(new Dimension(1000, 400));
+        explanationFrame.setSize(new Dimension(1000, 450));
         explanationFrame.setVisible(true);
         explanationFrame.getContentPane().add(explanationPane);
 
@@ -480,11 +480,12 @@ class CyberAdventure extends JPanel {
                     "The current page has a search bar up top for a user to find current items in the store's inventory. <br/>\n" +
                     "Below the search bar is the area where result from your search are returned. <br/>\n" +
                     "The area lowest on the screen shows you the SQL statement executed by the store's backend software to find the item you searched for.<br/>\n" +
-                    "Use this lowest area on the screen to help you with your SQL injection. </html>\n";
+                    "Use this lowest area on the screen to help you with your SQL injection. <br><br>" +
+                    "Click the HELP button to display information that will guide you through the SQL injection</html>\n";
         } else if (currentGame == Game.Password) {
             explanationFrame.setTitle("Password Cracker");
             explanation = "<html>" +
-                    "<b>You are now to crack the passwords you just retrieved from your SQL injection</b> <br/>" +
+                    "<b>You are now to crack the passwords you just retrieved from your SQL injection</b> <br><br>" +
                     "Copy and Paste the seemingly random 32 character strings into the box at the top on at a time and click 'Crack Password'. <br/>" +
                     "In the background, a password cracker is working to find out what password this seemingly random string corresponds to. <br/>" +
                     "This random string is a hash, which is what websites store in their database instead of an actual password. <br/><br/>" +
@@ -496,6 +497,7 @@ class CyberAdventure extends JPanel {
         } else if (currentGame == Game.StrongPasswords) {
             explanationFrame.setTitle("What is a Strong Password");
             explanation = "<html>" +
+                    "<h3>This is the last module of the game. Please press EXIT when you're done</h3><br>" +
                     "You now have the opportunity to try out various passwords of different lengths and character sets. <br/>" +
                     "The password you enter at the top will be converted to its hash similar to the passwords you extracted from the SQL injection. <br/>" +
                     "Whichever attack you choose to run on the password (brute force or dictionary) will try to crack the password you have entered using your entered password's hash, simulating a real scenario of cracking a password. <br/><br/>" +
