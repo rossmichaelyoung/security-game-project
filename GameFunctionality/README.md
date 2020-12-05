@@ -1,23 +1,18 @@
-# Cybersecurity Adventure Game  
-  
-### CyberAdventure.java  
+# Cybersecurity Adventure Game   
 
-CyberAdventure.java contains the CyberAdventure Game
+### To play our game, compile and run CyberAdventure.java following the steps below
 
-To compile on Mac from within the GameFunctionality Folder:
+To compile CyberAdventure.java from within the GameFunctionality Folder:
 ```
-javac -cp ".:../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java PhysicalAspects.java
+javac CyberAdventure.java
 ```
-To run on Mac from within the GameFunctionality Folder:
+
+To run CyberAdventure.java on Mac from within the GameFunctionality Folder:
 ```
 java -cp ".:../Resources/postgresql-42.2.18.jar" CyberAdventure
 ```
 
-To compile on Windows from within the GameFunctionality Folder:
-```
-javac -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure.java DictionaryAttackPasswordCracker.java SQLInjection.java GUIproperties.java PhysicalAspects.java
-```
-To run on Windows from within the GameFunctionality Folder:
+To run CyberAdventure.java on Windows from within the GameFunctionality Folder:
 ```
 java -cp ".;../Resources/postgresql-42.2.18.jar" CyberAdventure
 ```
